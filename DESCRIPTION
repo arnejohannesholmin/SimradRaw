@@ -1,0 +1,16 @@
+Package: SimradRaw
+Title: Read and write Simrad raw files
+Version: 1.1
+Authors@R: c(
+  person("Arne Johannes", "Holmin", role = c("aut","cre"), email = "arnejh@imr.no"))
+Author: Arne Johannes Holmin [aut, cre],
+Maintainer: Arne Johannes Holmin <arnejh@imr.no>
+Description: This R package provides functions for reading, writing, splitting and other processing of Simrad raw files (raw0 (echosounder) and raw1 (fishery sonar)). The code is based on the Matlab library written by dr. Rick Towler, NOAA Alaska Fisheries Science Center. The functions use the TSD package for efficient reading of the data (writes to a temporary TSD file and reads afterwards to avoid appending in memory).
+Depends: R (>= 3.3.3)
+BugReports: https://github.com/arnejohannesholmin/SimradRaw/issues
+License: LGPL-3
+LazyData: true
+RoxygenNote: 6.0.1
+Imports:
+		XML,
+		TSD
