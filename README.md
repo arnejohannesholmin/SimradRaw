@@ -11,7 +11,7 @@ Installation
 
 ``` r
 # Install the packages that SimradRaw depends on. Note that this updates all the specified packages to the latest (binary) version. To skip installing already installed packages, run install.packages(setdiff(dep.pck, installed.packages()[,"Package"]), repos="http://cran.us.r-project.org") instead:
-dep.pck <- c("XML")
+dep.pck <- c("pbapply", "XML")
 install.packages(dep.pck, repos="http://cran.us.r-project.org")
 
 # Install SimradRaw and also the packages that SimradRaw depends on which are on GitHub (by Holmin):
