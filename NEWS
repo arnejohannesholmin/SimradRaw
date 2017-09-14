@@ -1,0 +1,10 @@
+########## Version 1.0 ##########
+
+Provides functions for reading, writing, splitting and other processing of Simrad raw files (raw0 (echosounder) and raw1 (fishery sonar)). The code is based on the Matlab library written by dr. Rick Towler, NOAA Alaska Fisheries Science Center. The functions use the TSD package for efficient reading of the data (writes to a temporary TSD file and reads afterwards to avoid appending in memory).
+
+
+########## Version 1.1 ##########
+
+Changed readEKRaw() to write the acoustic data to multiple temporary TSD files for reduced memory and CPU time. Now the parameter 'prenumt' is not critical to set (defaulted to 10). Integer type of 'prenumt' removed as an option in EKRaw2TSD().
+
+Moved development to GitHub
