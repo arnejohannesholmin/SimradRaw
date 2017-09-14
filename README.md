@@ -18,6 +18,7 @@ install.packages(dep.pck, repos="http://cran.us.r-project.org")
 # On Windows you will need Rtools to complete the installations. Check if you have this by running Sys.getenv('PATH'), and go to https://cran.r-project.org/bin/windows/Rtools/ to install Rtools if not.
 
 dep.pck.git <- c("arnejohannesholmin/TSD", "arnejohannesholmin/SimradRaw")
+# If you want to install the lastest development versions, run devtools::install_github(dep.pck.git, ref="develop") instead:
 devtools::install_github(dep.pck.git)
 
 ```
