@@ -7,4 +7,9 @@ Provides functions for reading, writing, splitting and other processing of Simra
 
 Changed readEKRaw() to write the acoustic data to multiple temporary TSD files for reduced memory and CPU time. Now the parameter 'prenumt' is not critical to set (defaulted to 10). Integer type of 'prenumt' removed as an option in EKRaw2TSD().
 
-Moved development to GitHub
+Moved development to GitHub.
+
+
+########## Version 1.2 ##########
+
+Fixed bug in NMEA2vessel(), where cleanNMEA() caused problems when less than 2 non-NA values were present.

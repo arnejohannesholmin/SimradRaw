@@ -21,30 +21,12 @@
 #'
 readEKRaw_power2sv.TSD <- function(x, beams=list(), cali=NULL, list.out=FALSE, tiltcorr=0, toTS=FALSE){
 	
-	############ AUTHOR(S): ############
-	# Arne Johannes Holmin
-	############ LANGUAGE: #############
-	# English
 	############### LOG: ###############
 	# Start: 2014-11-10 - Clean version.
 	# Update: 2015-04-27 - Fixing bugs.
 	# Update: 2015-12-03 - Using full dimension for all elements to ensure that nothing wrong is happening.
 	# Last: 2015-12-21 - Added the calibration data as a list returned from a calibration xml file.
-	########### DESCRIPTION: ###########
-	# Converts power to volume backscattering coefficient from data in the TSD format.
-	########## DEPENDENCIES: ###########
-	#
-	############ VARIABLES: ############
-	# ---x--- is a list of the data (one element for each time step!!!).
-	# ---beams--- is a list of the beam configuration of the sonar or echosounder.
-	# ---cali--- optinal calibration information containing gain and Sa_correction values, possibly given pulse length values and frequencies.
-	# ---list.out--- is TRUE to return the data as a list of acoustic values and calibration values.
-	# ---tiltcorr--- is TRUE to apply the tilt correction used for fishery sonars.
-	# ---toTS--- is TRUE to apply the TS calibration instead for the Sv calibration.
 	
-
-	##################################################
-	##################################################
 	# Function used for expanding the dimenstions of the beams variables:
 	expandBeamsVars <- function(beams){
 		expandVar <- function(x){
@@ -79,26 +61,26 @@ readEKRaw_power2sv.TSD <- function(x, beams=list(), cali=NULL, list.out=FALSE, t
 		if(raw==1){
 			beams <- list(
 				# 1. Sa-correction: sacr:
-				sacr = x$data$pings$sacorrection, 
+				sacr <- x$data$pings$sacorrection, 
 				# 2. Gain: gai1, gai2:
-				gai1 = x$data$pings$gaintx, 
-				gai2 = x$data$pings$gainrx, 
+				gai1 <- x$data$pings$gaintx, 
+				gai2 <- x$data$pings$gainrx, 
 				# 3. Equivalent beam angle: eqba:
-				eqba = x$data$pings$equivalentbeamangle, 
+				eqba <- x$data$pings$equivalentbeamangle, 
 				# 4. Elevation angle (tilt): dirx:
-				dirx = x$data$pings$dirx)
+				dirx <- x$data$pings$dirx)
 		}
 		# Raw0:
 		else{
 			beams <- list(
 				# 1. Sa-correction, sacr:
-				sacr = x$data$config$sacorrectiontable[,1], 
+				sacr <- x$data$config$sacorrectiontable[,1], 
 				# 2. Gain: gain:
-				gain = x$data$config$gain, 
+				gain <- x$data$config$gain, 
 				# 3. Equivalent beam angle: eqba:
-				eqba = x$data$config$equivalentbeamangle, 
+				eqba <- x$data$config$equivalentbeamangle, 
 				# 4. Elevation angle (tilt): dirx:
-				dirx = x$data$config$dirx)
+				dirx <- x$data$config$dirx)
 		}	
 		
 		# Beams variables with the same location in raw0 and raw1:
@@ -190,7 +172,8 @@ readEKRaw_power2sv.TSD <- function(x, beams=list(), cali=NULL, list.out=FALSE, t
 	}
 	
 	# Drop to an array if all time steps have identical dimensions:
-	x$data$pings$power <- TSD::listOfEqual2array(x$data$pings$power)
+	# No longer used, since the new readEKRaw() outputs an array [#samples, #beams, #pings] padded with NAs.
+	#x$data$pings$power <- TSD::listOfEqual2array(x$data$pings$power)
 	if(is.list(x$data$pings$power)){
 		for(i in seq_len(beams$numt)){
 			thisdim <- TSD::dim_all(x$data$pings$power[[i]])
@@ -209,6 +192,4 @@ readEKRaw_power2sv.TSD <- function(x, beams=list(), cali=NULL, list.out=FALSE, t
 	else{
 		x$data$pings$power
 	}
-	##################################################
-	##################################################
 }

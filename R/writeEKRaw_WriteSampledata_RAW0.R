@@ -38,9 +38,9 @@ writeEKRaw_WriteSampledata_RAW0<-function(fid, data, endian="little"){
 	##################################################
 	# Write the elements of the 'data':
 	writeBin(as.integer(data$channel), con=fid, size=2, endian=endian)
-	mode_high = floor(data$mode/256) * 256
-	mode_low = data$mode - mode_high
-	mode_high = mode_high / 256
+	mode_high <- floor(data$mode/256) * 256
+	mode_low <- data$mode - mode_high
+	mode_high <- mode_high / 256
 	writeBin(as.integer(mode_low), con=fid, size=1, endian=endian)
 	writeBin(as.integer(mode_high), con=fid, size=1, endian=endian)
 	writeBin(as.double(data$transducerdepth), con=fid, size=4, endian=endian)
@@ -62,19 +62,20 @@ writeEKRaw_WriteSampledata_RAW0<-function(fid, data, endian="little"){
 	writeBin(as.integer(data$offset), con=fid, size=4, endian=endian)
 	
 	# Update data$count after removing missing values in the acoustic or angle data:
-	data$count=suppressWarnings(max(sum(!is.na(data$power)),sum(!is.na(data$athwartship)),sum(!is.na(data$alongship))))
+	data$count <- suppressWarnings(max(sum(!is.na(data$power)),sum(!is.na(data$athwartship)),sum(!is.na(data$alongship))))
 	writeBin(as.integer(data$count), con=fid, size=4, endian=endian) # 72 bytes in total
 	
 	# Write the acoustic and angle data:
 	if(data$count > 0){
+		s <- seq_len(data$count)
 		if(data$mode != 2){
 			# Power / (10 * log10(2) / 256)
-			data$power=as.integer(rm.na(data$power)/0.011758984205624)
+			data$power <- as.integer(data$power[s] / 0.011758984205624)
 			writeBin(data$power, con=fid, size=2, endian=endian)
 			}
 		if(data$mode > 1){
-			angle=c(t(cbind(data$athwartship,data$alongship)))
-			writeBin(as.integer(rm.na(angle)), con=fid, size=1, endian=endian)
+			angle <- c(t(cbind(data$athwartship[s], data$alongship[s])))
+			writeBin(as.integer(angle), con=fid, size=1, endian=endian)
 			}
 		}
 	##################################################

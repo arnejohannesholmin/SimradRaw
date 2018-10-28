@@ -1,6 +1,6 @@
 Package: SimradRaw
 Title: Read and write Simrad raw files
-Version: 1.1
+Version: 1.2
 Authors@R: c(
   person("Arne Johannes", "Holmin", role = c("aut","cre"), email = "arnejh@imr.no"))
 Author: Arne Johannes Holmin [aut, cre],
@@ -12,5 +12,6 @@ License: LGPL-3
 LazyData: true
 RoxygenNote: 6.0.1
 Imports:
+		data.table,
 		XML,
 		TSD

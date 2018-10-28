@@ -17,7 +17,7 @@
 #' @export
 #' @rdname readEKRaw_ReadDgHeader
 #'
-readEKRaw_ReadDgHeader<-function(fid, timeOffset=0, endian="little", xBase=-11644473600){
+readEKRaw_GetDgHeader <- function(x, timeOffset=0, endian="little", xBase=-11644473600, offset=0, ...){
 	
 	############ AUTHOR(S): ############
 	# Arne Johannes Holmin
@@ -39,18 +39,19 @@ readEKRaw_ReadDgHeader<-function(fid, timeOffset=0, endian="little", xBase=-1164
 	##################################################
 	##################################################
 	# Read datagram type:
-	dgType <- readChar(con=fid, nchars=4, useBytes=TRUE)
+	s <- seq_len(4) + offset
+	dgType <- rawToChar(x[s])
 	# If no data was read, end the function:
 	if(length(dgType)==0){
 		return(list())
 	}
 	
 	#  Read datagram time (NT Time - number of 100-nanosecond intervals since January 1, 1601):
-	lowdatetime <- readBin(fid, what="int", n=1, size=4, endian=endian, signed=TRUE)
+	lowdatetime <- readBin(x[4 + s], what="int", n=1, size=4, endian=endian, signed=TRUE)
 	if(length(lowdatetime)>0 && lowdatetime<0){
 		lowdatetime <- lowdatetime + 2^32
 	}
-	highdatetime <- readBin(fid, what="int", n=1, size=4, endian=endian, signed=TRUE)
+	highdatetime <- readBin(x[8 + s], what="int", n=1, size=4, endian=endian, signed=TRUE)
 	# Convert to unsingned integer, which is not supported in R:
 	# Convert NT time to MATLAB serial time:
 	FILETIME <- (highdatetime * 2 ^ 32 + lowdatetime) + timeOffset/86400

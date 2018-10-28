@@ -176,8 +176,11 @@ NMEA2vessel<-function(x, cleanNMEA=1, interpolate=TRUE){
 		}
 	
 	if(length(rawvessel$imtm)>0){
+		# Order the raw vessel data by the imtm:
 		rawvessel = lapply(rawvessel, "[", order(rawvessel$imtm))
-		if(cleanNMEA>1){
+		
+		# Remove incomplete and duplicate time steps, but only if two or more non-NA times are present:
+		if(cleanNMEA>1 || sum(!is.na(rawvessel$imtm))<=1){
 			notIsNA = rowSums(as.data.frame(lapply(rawvessel, is.na)))==0
 			rawvessel = lapply(rawvessel, "[", notIsNA)
 			}

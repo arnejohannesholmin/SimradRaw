@@ -16,24 +16,9 @@
 #'
 integer.base.b <- function(x, b=2, endian="little"){
 	
-	############ AUTHOR(S): ############
-	# Arne Johannes Holmin
-	############ LANGUAGE: #############
-	# English
 	############### LOG: ###############
 	# Start: 2014-11-10 - Clean version.
-	########### DESCRIPTION: ###########
-	# Get integer base of the input. Based on code by Lars Nonboe Andersen, Simrad.
-	########## DEPENDENCIES: ###########
-	#
-	############ VARIABLES: ############
-	# ---x--- is the value of sampledata$datatype.
-	# ---b--- is the base.
-	# ---endian' is the endian of the file, defaulted to .Platform$endian (changed from "big" by Arne Johannes Holmin 2012-07-31).
 	
-
-	##################################################
-	##################################################
 	ndigits <- (floor(logb(max(x), base=2))+1) 
 	Base.b <- array(NA, dim=c(length(x), ndigits))
 	for(i in 1:ndigits){
@@ -46,7 +31,5 @@ integer.base.b <- function(x, b=2, endian="little"){
 	else{
 		Base.b
 		}
-	##################################################
-	##################################################
 	}
 
