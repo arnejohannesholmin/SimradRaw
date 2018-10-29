@@ -13,7 +13,7 @@
 #' @export
 #' @rdname readEKRaw_ReadHeader
 #'
-readEKRaw_GetHeader <- function(x, endian="little", ...){
+readEKRaw_GetFileHeader <- function(x, endian="little", ...){
 	
 	############ AUTHOR(S): ############
 	# Arne Johannes Holmin
@@ -62,7 +62,7 @@ readEKRaw_GetHeader <- function(x, endian="little", ...){
 	# Collapse the tables into matrices:
 	for(i in seq_along(configXcvr)){
 		if(length(configXcvr[[i]][[1]])>1){
-			configXcvr[[i]] <- matrix(unlist(configXcvr[[i]]),byrow=TRUE,nrow=configheader$transceivercount)
+			configXcvr[[i]] <- matrix(unlist(configXcvr[[i]]), byrow=TRUE, nrow=configheader$transceivercount)
 			}
 		}
 	if(length(configXcvr)>0){

@@ -69,8 +69,8 @@ readEKRaw_ScanDgHeaders <- function(raw, endian="little", msg=TRUE, raw.out=FALS
 	colnames(dg) <- c("Nbytes", "dgLen", "dgName", "dgTime")
 	
 	# Warning if there is no CON0 datagram:
-	if(dg$dgName[1] != "CON0"){
-		warning("No CON0 datagram at the beginning of the file.")
+	if(!dg$dgName[1] %in% c("CON0", "XML0")){
+		warning("No CON0 or XML0 datagram at the beginning of the file.")
 	}
 	
 	# Output also the raw vector for each datagram, where the leading and trailing length info (4 bytes on each side) is removed, as well as the 12 bytes of the datagram header:

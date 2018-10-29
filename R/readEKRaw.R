@@ -79,19 +79,31 @@ readEKRaw <- function(f, t=1, endian="little", timeOffset=0, drop.out=FALSE, msg
 
 	# Function for converting a list of RAW* datagrams to a list of arrays filled with NAs for unequal lengths (of the beams):
 	#list2arrayAddNA_OneDatagram <- function(rawDatagram, data){
-	list2arrayAddNA <- function(raw, numb, splitByPings=FALSE){
+	list2arrayAddNA <- function(raw, numb, splitByPings=FALSE, drop.out=FALSE){
 		
 		# Transpose the list from one element per channel to one element per variable:
+		numraw <- length(raw)
 		prenames <- names(raw[[1]])
 		raw = data.table::as.data.table(raw)
 		raw = as.list(data.table::data.table(t(raw)))
 		names(raw) <- prenames
 		
 		# Get ping indices as incemeneting when the 'channel' variable resets:
-		channelID <- unlist(raw$channel)
-		pingID <- c(1, diff(channelID))
-		pingID <- pingID < 0
-		pingID <- cumsum(pingID) + 1
+		# Support for channel not present:
+		if(length(raw$channel)==0){
+			raw$channel <- as.list(rep(1, numraw))
+		}
+		
+		# Support for only one channel per ping:
+		if(all(unlist(raw$channel) == raw$channel[[1]])){
+			pingID <- seq_along(raw$channel)
+		}
+		else{
+			channelID <- unlist(raw$channel)
+			pingID <- c(1, diff(channelID))
+			pingID <- pingID < 0
+			pingID <- cumsum(pingID) + 1
+		}
 		#numb <- max(channelID)
 		numt <- max(pingID)
 		
@@ -117,6 +129,11 @@ readEKRaw <- function(f, t=1, endian="little", timeOffset=0, drop.out=FALSE, msg
 			}
 		}
 		
+		# Drop the empty dimensions if required:
+		if(drop.out){
+			raw <- lapply(raw, drop)
+		}
+	
 		raw
 	}
 	
@@ -139,10 +156,20 @@ readEKRaw <- function(f, t=1, endian="little", timeOffset=0, drop.out=FALSE, msg
 	}
 	# Function for converting a raw vector to an xml list:
 	readEKRaw_GetXML <- function(x, ...){
-		x <- rawToCharDotDotDot(x)
-		x <- XML::xmlParse(x)
-		x <- XML::xmlToList(x)
-		x
+		out <- rawToCharDotDotDot(x)
+		out <- XML::xmlParse(out)
+		out <- XML::xmlToList(out)
+		if(!is.list(out)){
+			out <- as.list(out)
+		}
+		out$time <- attr(x, "dgTime")
+		out
+	}
+	# Function for converting a raw vector to an xml list:
+	readEKRaw_GetMRU <- function(x, ...){
+		out <- convertRaw(x, dgName="MRU0", endian=endian)
+		out$time <- attr(x, "dgTime")
+		out
 	}
 	# Function for converting the raw vector given datagram name:
 	readEKRaw_getDatagram <- function(x, ...){
@@ -155,6 +182,14 @@ readEKRaw <- function(f, t=1, endian="little", timeOffset=0, drop.out=FALSE, msg
 		else if(dgName %in% "XML0"){
 			fun <- readEKRaw_GetXML
 		}
+		else if(dgName %in% "DEP0"){
+			fun <- function(x, endian="little", ...){
+				convertRaw(x, dgName="DEP0", endian=endian)
+			}
+		}
+		#else if(dgName %in% "CDS0"){
+		#	fun <- readEKRaw_GetXML
+		#}
 		else if(dgName %in% "RAW0"){
 			fun <- function(x, endian="little", ...){
 				# readEKRaw_GetRAW(x, dgName="RAW0", endian=endian, ...)
@@ -172,8 +207,11 @@ readEKRaw <- function(f, t=1, endian="little", timeOffset=0, drop.out=FALSE, msg
 				convertRaw(x, dgName="FIL1", endian=endian, ...)
 			}
 		}
+		else if(dgName %in% "MRU0"){
+			fun <- readEKRaw_GetMRU
+		}
 		else if(dgName %in% "CON0"){
-			fun <- readEKRaw_GetHeader
+			fun <- readEKRaw_GetFileHeader
 		}
 		else{
 			warning("Unknown datagram name ", dgName, ". Read as text.")
@@ -183,7 +221,6 @@ readEKRaw <- function(f, t=1, endian="little", timeOffset=0, drop.out=FALSE, msg
 		# Apply the funciton over all elements:
 		out <- lapply(x, fun, ...)
 	}
-	
 	
 	
 	########## File: ##########
@@ -201,20 +238,23 @@ readEKRaw <- function(f, t=1, endian="little", timeOffset=0, drop.out=FALSE, msg
 	# Read the raw file as raw:
 	temp <- readEKRaw_ScanDgHeaders(f, endian=endian, msg=msg)
 	
+	rawFileFormat <- readEKRaw_GetRawFileFormat(temp$dg)
+	
+	
 	
 	########## First: ##########
 	# Extract the first datagram as either CON0 (rAW0 and RAW1) or XML0 (RAW3):
 	if(any(temp$dg$dgName == "CON0")){
 		atCON0 <- temp$dg$dgName == "CON0"
 		atCON0 <- seq(temp$dg$starts[atCON0], temp$dg$end[atCON0])
-		config <- readEKRaw_GetHeader(temp$raw[atCON0])
+		config <- readEKRaw_GetFileHeader(temp$raw[atCON0])
 		# Get the number of beams:
 		numb <- config$header$transceivercount
 	}
 	else if(any(temp$dg$dgName == "XML0")){
 		atXML0 <- which(temp$dg$dgName == "XML0")[1]
 		atXML0 <- seq(temp$dg$starts[atXML0], temp$dg$end[atXML0])
-		config <- readEKRaw_GetXML(temp$raw[atXML0])
+		suppressWarnings(config <- readEKRaw_GetXML(temp$raw[atXML0]))
 		# Get the number of beams:
 		numb <- length(config$Transceivers)
 	}
@@ -269,35 +309,51 @@ readEKRaw <- function(f, t=1, endian="little", timeOffset=0, drop.out=FALSE, msg
 	data <- split(data$raw, data$dg$dgName)
 	####################
 	
+	# Exclude the first datagram, which has already been read:
+	#data <- data[-1]
 	
 	# Apply the conversion given datagram name:
 	data <- TSD::papply(data, readEKRaw_getDatagram, endian="little", timeOffset=0, xBase=-11644473600, complex.out=complex.out)
 	
 	
 	########## Header: ##########
-	# Interpret the CON0 datagram:
-	if(any(names(data) == "CON0")){
-		# Move the CON0 datagram to a 'config' list:
-		config <- data$CON0[[1]]
-		#data$CON0 <- NULL
-		# Get the number of beams:
-		numb <- config$header$transceivercount
-	}
-	else if(any(names(data) == "XML0")){
-		# Move the CON0 datagram to a 'config' list:
-		config <- data$XML0[[1]]
-		#data$CON0 <- NULL
-		# Get the number of beams:
-		numb <- length(config$Transceivers)
-	}
-	else{
-		warning("No CON0 datagram at the beginning of the file.")
-		config <- list()
-		numb <- 1
-	}
+	## Interpret the CON0 datagram:
+	#if(any(names(data) == "CON0")){
+	#	# Move the CON0 datagram to a 'config' list:
+	#	config <- data$CON0[[1]]
+	#	#data$CON0 <- NULL
+	#	# Get the number of beams:
+	#	numb <- config$header$transceivercount
+	#}
+	#else if(any(names(data) == "XML0")){
+	#	# Move the CON0 datagram to a 'config' list:
+	#	config <- data$XML0[[1]]
+	#	#data$CON0 <- NULL
+	#	# Get the number of beams:
+	#	numb <- length(config$Transceivers)
+	#}
+	#else{
+	#	stop("No CON0 or XML0 datagram at the beginning of the file.")
+	#	config <- list()
+	#	numb <- 1
+	#}
 	
 	# Add the transceiver configuration to the data:
-	data$config <- config$transceiver
+	data$config <- readEKRaw_getDataConfig(config=config, rawFileFormat=rawFileFormat)
+	#data$config <- config$transceiver
+	header <- readEKRaw_getHeader(config=config, data=data, rawFileFormat=rawFileFormat)
+	
+	# Get environment data from an XML0 datagram and remove this datagram:
+	data <- readEKRaw_getEnvironment(data)
+	
+	# Exclude the first datagram, which has already been read:
+	if(any(names(data) == "CON0")){
+		data <- readEKRaw_removeFirst(data, "CON0")
+	}
+	else if(any(names(data) == "XML0")){
+		#data <- readEKRaw_removeFirst(data, "XML0")
+		data <- readEKRaw_UsedXML0(data)
+	}
 	####################
 	
 	
@@ -311,13 +367,25 @@ readEKRaw <- function(f, t=1, endian="little", timeOffset=0, drop.out=FALSE, msg
 		warning("Only one RAW-datagram supported")
 	}
 	
-	browser()
 	
 	# Convert to a list of variables for the RAW* datagrams, and rename to "pings" according to the original Matlab structure by dr. Rick Towler, NOAA Alaska Fisheries Science Center:
-	data[[rawDatagram]] <- list2arrayAddNA(data[[rawDatagram]], numb=numb, splitByPings=splitByPings)
+	data[[rawDatagram]] <- list2arrayAddNA(data[[rawDatagram]], numb=numb, splitByPings=splitByPings, drop.out=drop.out)
 	names(data)[atRawDatagram] <- "pings"
-	# Reset the 'number' to the ping indices:
-	data$pings$number <- col(data$pings$number)
+	
+	# Reset the ping index 'number' to the ping indices:
+	data$pings$number <- if(length(dim(data$pings$number))==0) seq_along(data$pings$number) else col(data$pings$number)
+	numt <- max(data$pings$number)
+	
+	if(length(data$DEP0)){
+		data$DEP0 <- list2arrayAddNA(data$DEP0, numb=1, splitByPings=splitByPings, drop.out=drop.out)
+		data$DEP0 <- as.data.frame(data$DEP0, stringsAsFactors=FALSE)
+	}
+	if(length(data$MRU0)){
+		data$MRU0 <- list2arrayAddNA(data$MRU0, numb=1, splitByPings=splitByPings, drop.out=drop.out)
+		data$MRU0 <- as.data.frame(data$MRU0, stringsAsFactors=FALSE)
+	}
+	
+	
 	
 	# Unlist NMEA:
 	if(any(names(data) == "NME0")){
@@ -334,19 +402,13 @@ readEKRaw <- function(f, t=1, endian="little", timeOffset=0, drop.out=FALSE, msg
 		data$TAG0 <- NULL
 	}
 	
-	# Drop the empty dimensions if required:
-	if(drop.out){
-		data$pings <- lapply(data$pings, drop)
-	}
-	numt <- ncol(data$pings$channel)
-	
 	
 	# Order the data by name to resemble the old version:
 	data <- data[order(names(data))]
 	
 	
 	# Return the header and data:
-	list(header=config$header, data=data, numt=numt, numb=numb, datagramLengths=temp$dg$dgLen)
+	list(header=header, data=data, numt=numt, numb=numb, dg=temp$dg)
 	##################################################
 	##################################################
 }

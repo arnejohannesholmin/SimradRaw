@@ -68,7 +68,8 @@ readEKRaw_power2sv.TSD <- function(x, beams=list(), cali=NULL, list.out=FALSE, t
 				# 3. Equivalent beam angle: eqba:
 				eqba <- x$data$pings$equivalentbeamangle, 
 				# 4. Elevation angle (tilt): dirx:
-				dirx <- x$data$pings$dirx)
+				dirx <- x$data$pings$dirx
+			)
 		}
 		# Raw0:
 		else{
@@ -80,7 +81,8 @@ readEKRaw_power2sv.TSD <- function(x, beams=list(), cali=NULL, list.out=FALSE, t
 				# 3. Equivalent beam angle: eqba:
 				eqba <- x$data$config$equivalentbeamangle, 
 				# 4. Elevation angle (tilt): dirx:
-				dirx <- x$data$config$dirx)
+				dirx <- x$data$config$dirx
+			)
 		}	
 		
 		# Beams variables with the same location in raw0 and raw1:

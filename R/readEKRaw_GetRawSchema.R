@@ -379,6 +379,17 @@ readEKRaw_GetSchema <- function(dgName=c("RAW0", "RAW1", "ConfigHeader", "Transc
 		
 		list(var="coefficients",				what="double", n=nFIL1,	size=4)
 	)
+	schema_MRU0 <- list(
+		list(var="heave",						what="double", n=1,	  size=4), 
+		list(var="roll",						what="double", n=1,	  size=4), 
+		list(var="pitch",						what="double", n=1,	  size=4), 
+		list(var="heading",						what="double", n=1,	  size=4)
+	)
+	schema_DEP0 <- list(
+		list(var="depth",						what="double", n=1,	  size=4), 
+		list(var="parameter1",					what="double", n=1,	  size=4), 
+		list(var="parameter2",					what="double", n=1,	  size=4)
+	)
 	
 	# Get the datagram schema by type:
 	schema <- get(paste("schema", dgName[1], sep="_"))
@@ -413,6 +424,9 @@ readEKRaw_GetSchema <- function(dgName=c("RAW0", "RAW1", "ConfigHeader", "Transc
 	
 	# Convert to a list:
 	schema <- as.list(schema)
+	# Set the dgName as attribute:
+	attr(schema, "dgName") <- dgName[1]
+	
 	schema
 }
 
@@ -457,7 +471,7 @@ convertRawOneDependent <- function(i, x, schema, data, endian="little", offset=0
 	}
 	out
 }
-convertRaw <- function(x, schema=NULL, dgName=c("RAW0", "RAW1", "ConfigHeader", "TransceiverConfig"), afterStatic=c("getMode"), afterDependent=c("complex2power", "getAngles", "getPower"), endian="little", offset=0, ...){
+convertRaw <- function(x, schema=NULL, dgName=c("RAW0", "RAW1", "ConfigHeader", "TransceiverConfig"), afterStatic=c("readEKRaw_getMode"), afterDependent=c("readEKRaw_complex2power", "readEKRaw_getAngles", "readEKRaw_getPower"), endian="little", offset=0, ...){
 	# Get the schema if missing:
 	if(length(schema)==0){
 		schema <- readEKRaw_GetSchema(dgName[1])
@@ -491,7 +505,7 @@ convertRaw <- function(x, schema=NULL, dgName=c("RAW0", "RAW1", "ConfigHeader", 
 	}
 	
 	# Add certain variables for RAW datagrams:
-	if(startsWith(dgName[1], "RAW")){
+	if(startsWith(attr(schema, "dgName"), "RAW")){
 		# Set the 'number', which is the ping index of the file (set to NA here and then reset in readEKRawAll()), and the datagram time:
 		out$number <- NA
 		out$time <- attr(x, "dgTime")
