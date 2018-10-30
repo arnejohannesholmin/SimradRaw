@@ -4,30 +4,27 @@
 \alias{readEKRaw}
 \title{Reads a Simrad raw file.}
 \usage{
-readEKRaw(f, t = 1, endian = "little", timeOffset = 0,
-  minTimeDiff = Inf, drop.out = FALSE, msg = TRUE, prenumt = 10,
-  na.rm = TRUE, cleartemp = FALSE)
+readEKRaw(f, t = 1, endian = "little", timeOffset = 0, drop.out = FALSE,
+  msg = TRUE, pb = TRUE, splitByPings = FALSE, complex.out = FALSE, ...)
 }
 \arguments{
-\item{f}{is the path to the raw file.}
+\item{f}{The path to the raw file.}
 
-\item{t}{is a vector of the time steps to read.}
+\item{t}{A vector of the time steps to read.}
 
-\item{timeOffset}{is the time offset of the datagram.}
+\item{timeOffset}{The time offset of the datagram.}
 
-\item{minTimeDiff}{is the minimum difference in matlab time betwee two pings.}
+\item{drop.out}{Logical: If TRUE drop dimensions of the output data.}
 
-\item{drop.out}{is TRUE to drop dimensions of the data.}
+\item{msg, pb}{See ?TSD::papply.}
 
-\item{msg}{is TRUE to print a time bar during reading.}
+\item{splitByPings}{Logical: If TRUE split the acoustic data into a list of single pings and strip off ranges with all NAs at the end of the beams (corresponding to the output from \code{\link{readEKRawOld}}).}
 
-\item{prenumt}{is the number of time steps to reserve in the temporary file sto which data are saved during reading in order to restrict memeory usage. High values result in fewer temporary file but higher CPU time. The default value of 10 should be relatively optimal.}
+\item{complex.out}{Logical: If TRUE output also the complex values stored in the raw file for the RAW1 file format (fishery sonar).}
 
-\item{na.rm}{is TRUE to remove missing pings.}
+\item{...}{Used for robustness.}
 
-\item{cleartemp}{is TRUE to clear all files in the temporary directory in which files are written in the TSD format for faster reading of the raw files. These files are deleted at startup of the operating system, but can be deleted specifically here if needed.}
-
-\item{endian'}{is the endian of the file, defaulted to .Platform$endian (changed from "big" by Arne Johannes Holmin 2012-07-31). NA}
+\item{endian'}{The endian of the file, defaulted to "little".}
 }
 \value{
 

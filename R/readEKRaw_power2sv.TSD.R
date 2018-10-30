@@ -21,10 +21,6 @@
 #'
 readEKRaw_power2sv.TSD <- function(x, beams=list(), cali=NULL, list.out=FALSE, tiltcorr=0, toTS=FALSE){
 	
-	############ AUTHOR(S): ############
-	# Arne Johannes Holmin
-	############ LANGUAGE: #############
-	# English
 	############### LOG: ###############
 	# Start: 2014-11-10 - Clean version.
 	# Update: 2015-04-27 - Fixing bugs.

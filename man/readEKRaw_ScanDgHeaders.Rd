@@ -2,31 +2,20 @@
 % Please edit documentation in R/readEKRaw_ScanDgHeaders.R
 \name{readEKRaw_ScanDgHeaders}
 \alias{readEKRaw_ScanDgHeaders}
-\title{Modify parts of EK80/WBAT .raw files}
+\title{Read all datagram headers of a Simrad raw file.}
 \usage{
-readEKRaw_ScanDgHeaders(filename, newDir, t = "all", addMRU = TRUE,
-  fixBeamType = TRUE, fixSlope = TRUE, endian = "little", msg = TRUE)
+readEKRaw_ScanDgHeaders(filename, endian = "little", msg = TRUE)
 }
 \arguments{
-\item{filename}{The path to directory of raw files or a vector of the paths to the raw files.}
-
-\item{newDir}{The directory in which to put the modified files.}
-
-\item{addMRU}{logical; if TRUE the funciton inserts a dummy MRU0 datagram prior to RAW3 datagrams.}
-
-\item{fixBeamType}{logical; if TRUE the BeamType is fixed to 1.}
-
-\item{fixSlope}{logical; if TRUE the slope is set to a default.}
+\item{filename}{The path to a raw file.}
 
 \item{endian}{the endianness of the file, defaulted to "little".}
 
-\item{msg}{logical: if TRUE print a time bar during file conversion.}
-
-\item{addTransducerSeralNumber}{A string giving the transducer serial number.}
+\item{msg}{logical: if TRUE print a time bar during file reading.}
 }
 \value{
-A vector of file names of the modified files.
+A data frame of datagram info.
 }
 \description{
-Provides the facility to modify parts of EK80/WBAT .raw files so that these files can be read by the Large Scale Survey System (LSSS) software.
+Read all datagram headers of a Simrad raw file.
 }

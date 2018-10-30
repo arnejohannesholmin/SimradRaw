@@ -1,19 +1,12 @@
 #*********************************************
 #*********************************************
-#' Modify parts of EK80/WBAT .raw files
+#' Read all datagram headers of a Simrad raw file.
 #'
-#' Provides the facility to modify parts of EK80/WBAT .raw files so that these files can be read by the Large Scale Survey System (LSSS) software.
-#'
-#' @param filename The path to directory of raw files or a vector of the paths to the raw files.
-#' @param newDir The directory in which to put the modified files.
-#' @param addMRU logical; if TRUE the funciton inserts a dummy MRU0 datagram prior to RAW3 datagrams.
-#' @param fixBeamType logical; if TRUE the BeamType is fixed to 1.
-#' @param fixSlope logical; if TRUE the slope is set to a default.
-#' @param addTransducerSeralNumber A string giving the transducer serial number.
+#' @param filename The path to a raw file.
 #' @param endian the endianness of the file, defaulted to "little".
-#' @param msg logical: if TRUE print a time bar during file conversion.
+#' @param msg logical: if TRUE print a time bar during file reading.
 #'
-#' @return A vector of file names of the modified files.
+#' @return A data frame of datagram info.
 #'
 #' @importFrom TSD is.TSD
 #' @importFrom tools file_ext
@@ -21,7 +14,7 @@
 #' @export
 #' @rdname readEKRaw_ScanDgHeaders
 #' 
-readEKRaw_ScanDgHeaders<-function(filename, newDir, t="all", addMRU=TRUE, fixBeamType=TRUE, fixSlope=TRUE, endian="little", msg=TRUE){
+readEKRaw_ScanDgHeaders <- function(filename, endian="little", msg=TRUE){
 	
 	##### Preparation #####
 	# Chech the name of the file and whether it is a TSD file:
