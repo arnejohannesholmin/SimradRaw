@@ -4,7 +4,7 @@
 \name{readEKRaw_ScanDgHeaders}
 \alias{readEKRaw_ScanDgHeaders}
 \alias{readEKRaw_ScanDgHeaders_old}
-\title{Modify parts of EK80/WBAT .raw files}
+\title{Read all datagram headers of a Simrad raw file.}
 \usage{
 readEKRaw_ScanDgHeaders(raw, endian = "little", msg = TRUE,
   raw.out = FALSE)
@@ -15,7 +15,7 @@ readEKRaw_ScanDgHeaders_old(filename, t = "all", addMRU = TRUE,
 \arguments{
 \item{endian}{the endianness of the file, defaulted to "little".}
 
-\item{msg}{logical: if TRUE print a time bar during file conversion.}
+\item{msg}{logical: if TRUE print a time bar during file reading.}
 
 \item{filename}{The path to directory of raw files or a vector of the paths to the raw files.}
 
@@ -36,7 +36,7 @@ readEKRaw_ScanDgHeaders_old(filename, t = "all", addMRU = TRUE,
 \item{msg}{logical: if TRUE print a time bar during file conversion.}
 }
 \value{
-A vector of file names of the modified files.
+A data frame of datagram info.
 
 A vector of file names of the modified files.
 }

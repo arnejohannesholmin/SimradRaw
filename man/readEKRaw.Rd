@@ -13,21 +13,21 @@ readEKRawOld(f, t = 1, endian = "little", timeOffset = 0,
   na.rm = TRUE, cleartemp = FALSE)
 }
 \arguments{
-\item{f}{The path to the raw file.}
+\item{f}{is the path to the raw file.}
 
-\item{t}{A vector of the time steps to read.}
+\item{t}{is a vector of the time steps to read.}
 
-\item{timeOffset}{The time offset of the datagram.}
+\item{timeOffset}{is the time offset of the datagram.}
 
 \item{drop.out}{is TRUE to drop dimensions of the data.}
 
-\item{splitByPings}{Logical: If TRUE split the acoustic data into a list of single pings and strip off ranges with all NAs at the end of the beams (corresponding to the output from \code{\link{readEKRawOld}}).}
+\item{msg}{is TRUE to print a time bar during reading.}
 
 \item{minTimeDiff}{is the minimum difference in matlab time betwee two pings.}
 
 \item{prenumt}{is the number of time steps to reserve in the temporary file sto which data are saved during reading in order to restrict memeory usage. High values result in fewer temporary file but higher CPU time. The default value of 10 should be relatively optimal.}
 
-\item{...}{Used for robustness.}
+\item{na.rm}{is TRUE to remove missing pings.}
 
 \item{cleartemp}{is TRUE to clear all files in the temporary directory in which files are written in the TSD format for faster reading of the raw files. These files are deleted at startup of the operating system, but can be deleted specifically here if needed.}
 
