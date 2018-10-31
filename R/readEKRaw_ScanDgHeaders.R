@@ -2,7 +2,10 @@
 #*********************************************
 #' Read all datagram headers of a Simrad raw file.
 #'
-#' @param filename The path to a raw file.
+#' Provides the facility to modify parts of EK80/WBAT .raw files so that these files can be read by the Large Scale Survey System (LSSS) software.
+#'
+#' @param filename The path to directory of raw files or a vector of the paths to the raw files.
+#' @param addTransducerSeralNumber A string giving the transducer serial number.
 #' @param endian the endianness of the file, defaulted to "little".
 #' @param msg logical: if TRUE print a time bar during file reading.
 #'
@@ -10,99 +13,88 @@
 #'
 #' @importFrom TSD is.TSD
 #' @importFrom tools file_ext
+#' @importFrom data.table rbindlist
 #'
 #' @export
 #' @rdname readEKRaw_ScanDgHeaders
 #' 
-readEKRaw_ScanDgHeaders <- function(filename, endian="little", msg=TRUE){
+readEKRaw_ScanDgHeaders <- function(raw, endian="little", msg=TRUE, raw.out=FALSE){
 	
-	##### Preparation #####
-	# Chech the name of the file and whether it is a TSD file:
-	if(tolower(tools::file_ext(filename))!="raw"){
-		warnings(paste0("The file ", filename, " does not have file extension \"raw\""))
-		}
-	if(TSD::is.TSD(filename)){
-		stop(paste0("The file ", filename, " is a TSD file. Only SIMRAD raw files accepted"))
-		}
+	#  Read the entire file if not previously read:
+	if(is.character(raw) && file.exists(raw)){
+		fid <- file(raw, "rb")
+		on.exit(close(fid))
+		raw <- readBin(fid, "raw", file.info(raw)$size)
+	}
 	
-	nBytesDgHeader = 12
-	nBytesConfigHeader = 516
-	nBytesTransceiverCount = 320
-	nBytesHeader = 8
-	nBytesSampledataInfo = 72
-	nNMEA = 0
-	nTAG = 0
-	# Ping index number:
-	pind = 0
-	pingsnames = NULL
-	fileSize=file.info(filename)$size
-	previousTime=-Inf
-	
-	# Open the raw file:
-	fid=file(filename, "rb")
+	nbytesDgLen <- 4
+	nBytesDgHeader <- 12
+	totalsteps <- length(raw)
 	
 	
-	nBytesRead = 0
+	# Define the output 'out', the datagram indices 'i', and the position in the raw vector 'at':
+	out <- list()
+	at <- 0
+	i <- 0
 	
-	##### Read the file, processing individual datagrams: #####
-	totalsteps=file.info(filename)$size
-	if(msg){
-		# Plotting of time bar:
-		infostring="Reading datagram headers from a Simrad raw file:"
-		cat(infostring,"\n",sep="")
-		stepfact=nchar(infostring)/totalsteps
-		oldvalue=0
+	while(at < totalsteps){
+		# Increment datagram index:
+		i <- i + 1
+		# Get the datagram length in bytes:
+		dgLen <- readBin(raw[at + seq_len(nbytesDgLen)], what="int", n=1, size=nbytesDgLen, endian=endian, signed=TRUE)
+		if(dgLen == 0){
+			warning("The datagram at position ", at, " is empty.")
 		}
 	
-	
-	##### Execution and output #####
-	out = NULL
-	while(nBytesRead<fileSize){
-		if(msg){
-			# Print a dot if the floor of the new value exceeds the old value:
-			thisvalue=floor(seek(fid)*stepfact)
-			if(thisvalue > oldvalue){
-				cat(rep(".",thisvalue-oldvalue))
-				oldvalue=thisvalue
-				}
-			}
-			
-		# > > > > > > > > > > #
-		len = readBin(fid, what="int", n=1, size=4, endian=endian, signed=TRUE)
 		# If the length of the datagram is 0, abort the reading:
-		alreadyread = seek(fid)
-		if(sum(len)==0 && alreadyread<totalsteps){
-			warning(paste0("File ", filename, " was only partially read.", if(msg) paste0(" Number of bytes read: ", alreadyread, " of ", totalsteps, " (",  format(100*alreadyread/totalsteps,digits=1), " percent read).")))
+		if(sum(dgLen)==0 && at < totalsteps){
 			break
-			}
-		# < < < < < < < < < < #
+		}
 		
 		# Read the datagram header:
-		# > > > > > > > > > > #
-		dgHeader = readEKRaw_ReadDgHeader(fid, timeOffset=0, endian=endian)
-		raw = seek(fid, where=len-nBytesDgHeader, origin="current")
-		# < < < < < < < < < < #
+		dgHeader <- readEKRaw_GetDgHeader(raw[at + nbytesDgLen + seq_len(nBytesDgHeader)], timeOffset=0, endian=endian)
+		at <- at + dgLen + 8 # 4 bytes each from reading the 'dgLen' at the start and end of the datagram, in total 8 bytes
 		
-		out = rbind(out, c(len, unlist(dgHeader)))
-		
-		nBytesRead = nBytesRead + len + 8 # 4 bytes each from reading the 'len' and 'lastlen', in total 8 bytes
-		
-		# Datagram length is repeated:
-		# > > > > > > > > > > #
-		lastLen = readBin(fid, what="int", n=1, size=4, endian=endian, signed=TRUE)
-		# < < < < < < < < < < #
-		}
+		# Add the number of bytes used for the datagram length before and anfter the datagram:
+		Nbytes <- dgLen + 2 * nbytesDgLen
+		out[[i]] <- c(list(Nbytes=Nbytes, dgLen=dgLen), dgHeader)
+	}
 	
-	close(fid)
 	if(msg){
 		cat("\n", sep="")
-		}
+	}
 	
 	# Return the header and data:
-	colnames(out) = c("Nbytes", "dgName", "dgTime")
-	out
-	##################################################
-	##################################################
+	dg <- as.data.frame(data.table::rbindlist(out), stringsAsFactors=FALSE)
+	colnames(dg) <- c("Nbytes", "dgLen", "dgName", "dgTime")
+	
+	# Warning if there is no CON0 datagram:
+	if(!dg$dgName[1] %in% c("CON0", "XML0")){
+		warning("No CON0 or XML0 datagram at the beginning of the file.")
 	}
+	
+	# Output also the raw vector for each datagram, where the leading and trailing length info (4 bytes on each side) is removed, as well as the 12 bytes of the datagram header:
+	dg$starts <- cumsum(dg$Nbytes)
+	dg$ends <- dg$starts - nbytesDgLen
+	dg$starts <- c(0, dg$starts[-length(dg$starts)]) + nbytesDgLen + nBytesDgHeader + 1
+	
+	if(raw.out){
+		rawsplit <- readEKRaw_SplitRawVector(list(raw=raw, dg=dg))$raw
+		list(dg=dg, raw=raw, rawsplit=rawsplit)
+	}
+	else{
+		list(dg=dg, raw=raw)
+	}
+}
 
-
+readEKRaw_SplitRawVector <- function(x, dg=NULL, ind=NULL){
+	if(length(ind) == 0){
+		ind <- seq_along(x$dg$starts)
+	}
+	x$dg <- x$dg[ind, ]
+	# Run thorugh the rows of the datagram info matrix x$dg, and extract the datagrams as raw vectors:
+	vec <- seq_len(nrow(x$dg))
+	x$raw <- lapply(vec, function(i) x$raw[seq(x$dg$starts[i], x$dg$ends[i])])
+	names(x$raw) <- x$dg$dgName
+	x
+}

@@ -14,7 +14,7 @@
 #' @export
 #' @rdname writeEKRaw_WriteSampledata_RAW1
 #'
-writeEKRaw_WriteSampledata_RAW1<-function(fid, data, endian="little"){
+writeEKRaw_WriteSampledata_RAW1 <- function(fid, data, endian="little"){
 	
 	############ AUTHOR(S): ############
 	# Arne Johannes Holmin
@@ -78,8 +78,9 @@ writeEKRaw_WriteSampledata_RAW1<-function(fid, data, endian="little"){
 	writeBin(as.integer(data$count), con=fid, size=4, endian=endian) # 132 bytes in total
 	
 	# Write the complex acoustic data:
-	if(integer.base.b(data$datatype,endian=endian)[4]==1){
-		writeBin(as.double(c(t(cbind(Re(data$data),Im(data$data))))), con=fid, size=4, endian=endian)
+	if(integer.base.b(data$datatype, endian=endian)[4]==1){
+		s <- seq_len(data$count)
+		writeBin(as.double(c(t(cbind(Re(data$data[s]), Im(data$data[s]))))), con=fid, size=4, endian=endian)
 		}
 	##################################################
 	##################################################

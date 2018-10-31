@@ -13,5 +13,5 @@
 #' @rdname getRangeOffsetInUnitsOfSamples
 #' 
 getRangeOffsetInUnitsOfSamples <- function(beams){
-	round(beams$rofs[1] / soundbeam_range(beams, pos=c("res"))[1])
+	round(beams$rofs / soundbeam_range(beams, pos=c("res"))[1])
 }
