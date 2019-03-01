@@ -2,15 +2,20 @@
 % Please edit documentation in R/readEKRaw_stripNA.R
 \name{readEKRaw_stripNA}
 \alias{readEKRaw_stripNA}
-\title{(Internal) Strips the input from NAs, used in EKRaw2TSD_oneFile().}
+\title{(Internal) Strips the input from NAs, used to remove missing pings in EKRaw2TSD_oneFile().}
 \usage{
 readEKRaw_stripNA(x, NAind = NULL)
+}
+\arguments{
+\item{x}{a matrix or array of acoustic data.}
+
+\item{NAind}{indices of the NAs.}
 }
 \value{
 
 }
 \description{
-(Internal) Strips the input from NAs, used in EKRaw2TSD_oneFile().
+(Internal) Strips the input from NAs, used to remove missing pings in EKRaw2TSD_oneFile().
 }
 \examples{
 \dontrun{}

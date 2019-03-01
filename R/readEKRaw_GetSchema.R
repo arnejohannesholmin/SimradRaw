@@ -2,7 +2,7 @@
 #*********************************************
 #' Reads the sample data from a Simrad raw1 file.
 #'
-#' @param x  is the path to the raw file.
+#' @param dgName	The type of schema, such as a datagram name.
 #'
 #' @return
 #'
@@ -320,9 +320,3 @@ convertRaw <- function(x, schema=NULL, dgName=c("RAW0", "RAW1", "ConfigHeader", 
 	
 	out
 }
-
-
-
-
-
-

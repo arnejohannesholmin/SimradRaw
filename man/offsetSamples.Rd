@@ -9,9 +9,7 @@ offsetSamples(x, beams)
 \arguments{
 \item{x}{The acoustic data to be shifted by the offset}
 
-\item{rofs}{The empirical range offset.}
-
-\item{rres.exp}{The radial resolution of the sonar (c * dt / 2, where c is speed of sound and dt is sampling interval duration)}
+\item{beams}{A list containing the fields rofs (range offset in meters) and one of rres (range resolution) og the pair asps (average speed of sound) and sint (sampling interval).}
 }
 \value{
 

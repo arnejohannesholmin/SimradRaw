@@ -2,12 +2,15 @@
 #*********************************************
 #' Reads a Simrad raw file.
 #'
-#' @param f  is the path to the raw file.
-#' @param t  is a vector of the time steps to read.
-#' @param endian' is the endian of the file, defaulted to .Platform$endian (changed from "big" by Arne Johannes Holmin 2012-07-31). NA
-#' @param timeOffset  is the time offset of the datagram.
-#' @param drop.out  is TRUE to drop dimensions of the data.
-#' @param msg  is TRUE to print a time bar during reading.
+#' @param f				The path to the raw file.
+#' @param t				A vector of the time steps to read.
+#' @param endian		The endian of the file.
+#' @param timeOffset	The time offset of the datagram.
+#' @param drop.out		Logical: If TRUE drop dimensions of the data.
+#' @param msg			Logical: If TRUE print a time bar during reading.
+#' @param splitByPings	Logical: If TRUE split the acousic data by pings, which can avoid many NAs at the ends of the beams when the range shifts inside a file.
+#' @param complex.out	Logical: If TRUE output the real and imaginary part usd to extract power (for fishery sonars).
+#' @param ...			Used for robustness.
 #'
 #' @return
 #'
@@ -79,7 +82,7 @@ readEKRaw <- function(f, t=1, endian="little", timeOffset=0, drop.out=FALSE, msg
 	}
 	
 	# Function that returns an array filled with NAs where there is no data:
-	fillNA <- function(x, numb, numt){
+	fillNA <- function(x, numb, numt, pingID){
 		# Get the lengths of the data:
 		lens <- unlist(lapply(x, length), use.names=FALSE)
 		maxlens <- max(lens)
@@ -146,7 +149,7 @@ readEKRaw <- function(f, t=1, endian="little", timeOffset=0, drop.out=FALSE, msg
 		}
 		
 		# Fill with NAs:
-		raw <- lapply(raw, fillNA, numb, numt)
+		raw <- lapply(raw, fillNA, numb=numb, numt=numt, pingID=pingID)
 		
 		# If required, split into single pings for the acosutic data (for compatibility with older versions):
 		if(splitByPings){
@@ -439,6 +442,28 @@ readEKRaw <- function(f, t=1, endian="little", timeOffset=0, drop.out=FALSE, msg
 	##################################################
 	##################################################
 }
+#'
+#' @export
+#'
+readEKRaw_GetRawFileFormat <- function(x){
+	# The RAW0-fileformat contains both CON0 and RAW0:
+	if(all(c("CON0", "RAW0") %in% x$dgName)){
+		rawFileFormat <- 0
+	}
+	else if(all(c("CON0", "RAW1") %in% x$dgName)){
+		rawFileFormat <- 1
+	}
+	else if(all(c("RAW2") %in% x$dgName)){
+		rawFileFormat <- 2
+	}
+	else if("XML0" %in% x$dgName && any(c("RAW0", "RAW3") %in% x$dgName)){
+		rawFileFormat <- 3
+	}
+	else{
+		warning("Unsupported rawFileFormat")
+	}
+	rawFileFormat
+}
 
 # Function for converting mode_high and mode_low to mode:
 readEKRaw_getMode <- function(x, ...){
@@ -470,7 +495,7 @@ readEKRaw_complex2power <- function(x, complex.out=FALSE, ...){
 # Function for converting getting athwartship and alongship angles:
 readEKRaw_getAngles <- function(x, ...){
 	if(length(x$angle)){
-		x$angle <- matrix(angle, nrow=x$count, ncol=2, byrow=TRUE)
+		x$angle <- matrix(x$angle, nrow=x$count, ncol=2, byrow=TRUE)
 		x$athwartship <- x$angle[,1]
 		x$alongship <- x$angle[,2]
 		# Remove the angle
@@ -521,25 +546,7 @@ readEKRaw_UsedXML0 <- function(data){
 	data
 }
 
-readEKRaw_GetRawFileFormat <- function(x){
-	# The RAW0-fileformat contains both CON0 and RAW0:
-	if(all(c("CON0", "RAW0") %in% x$dgName)){
-		rawFileFormat <- 0
-	}
-	else if(all(c("CON0", "RAW1") %in% x$dgName)){
-		rawFileFormat <- 1
-	}
-	else if(all(c("RAW2") %in% x$dgName)){
-		rawFileFormat <- 2
-	}
-	else if("XML0" %in% x$dgName && any(c("RAW0", "RAW3") %in% x$dgName)){
-		rawFileFormat <- 3
-	}
-	else{
-		warning("Unsupported rawFileFormat")
-	}
-	rawFileFormat
-}
+
 
 readEKRaw_getDataConfig <- function(config, rawFileFormat){
 	#if(length(config$transceiver)){

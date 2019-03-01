@@ -1,10 +1,10 @@
 SimradRaw R package
 =====
 
-This R package provides functions for reading, writing, splitting and other processing of Simrad raw files (raw0 (echosounder) and raw1 (fishery sonar)). The code is based on the Matlab library written by dr. Rick Towler, NOAA Alaska Fisheries Science Center. The sonR package (https://github.com/arnejohannesholmin/sonR) can be used for converting raw files to the binary TSD format (using the TSD package https://github.com/arnejohannesholmin/TSD) for faster reading.
+This R package provides functions for reading, writing, splitting and other processing of Simrad raw files (raw0 (echosounder) and raw1 (fishery sonar)). The code is based on the Matlab library written by dr. Rick Towler, NOAA Alaska Fisheries Science Center. The functions use the TSD package for efficient reading of the data (writes to a temporary TSD file and reads afterwards to avoid appending in memory).
 
-Version: 1.3
-Required R version: 3.4
+Version: 1.1
+Required R version: 3.4.4
 
 Installation
 =====

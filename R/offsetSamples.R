@@ -3,8 +3,7 @@
 #' Shifts sonar data by an empirical range offset.
 #'
 #' @param x  The acoustic data to be shifted by the offset
-#' @param rofs  The empirical range offset.
-#' @param rres.exp  The radial resolution of the sonar (c * dt / 2, where c is speed of sound and dt is sampling interval duration)
+#' @param beams  A list containing the fields rofs (range offset in meters) and one of rres (range resolution) og the pair asps (average speed of sound) and sint (sampling interval).
 #'
 #' @return
 #'

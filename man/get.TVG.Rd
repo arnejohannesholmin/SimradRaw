@@ -17,6 +17,8 @@ get.TVG(beams, x = NULL, linear = TRUE, TVG.exp = 2, Ro = NULL,
 \item{TVG.exp}{is the exponent of the eamotric spreading of the sound wave, theoretically 2 for Sv and 4 for TS.}
 
 \item{Ro}{is used in Gavins work, shifting the first voxel to be imaginarily placed inside of the sonar.}
+
+\item{thr1m}{Logical: If TRUE apply a rule that TVG closer than 1 m should not cause increasedd level (used in LSSS?))}
 }
 \value{
 

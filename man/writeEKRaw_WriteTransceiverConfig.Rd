@@ -11,9 +11,9 @@ writeEKRaw_WriteTransceiverConfig(fid, configXcvr, i, endian = "little")
 
 \item{configXcvr}{is a list of the transceiver configuration.}
 
-\item{endian}{is the endian of the file, defaulted to .Platform$endian (changed from "big" by Arne Johannes Holmin 2012-07-31).}
+\item{i}{the channel index.}
 
-\item{xBase}{is the index of the time step.}
+\item{endian}{is the endian of the file, defaulted to .Platform$endian (changed from "big" by Arne Johannes Holmin 2012-07-31).}
 }
 \value{
 

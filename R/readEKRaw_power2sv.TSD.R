@@ -17,7 +17,6 @@
 #' @importFrom TSD dim_all listOfEqual2array
 #'
 #' @export
-#' @rdname readEKRaw_power2sv.TSD
 #'
 readEKRaw_power2sv.TSD <- function(x, beams=list(), cali=NULL, list.out=FALSE, tiltcorr=0, toTS=FALSE){
 	

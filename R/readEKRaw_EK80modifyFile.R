@@ -6,10 +6,11 @@
 #'
 #' @param filename The path to directory of raw files or a vector of the paths to the raw files.
 #' @param newDir The directory in which to put the modified files.
+#' @param t The pings to process.
 #' @param addMRU logical; if TRUE the funciton inserts a dummy MRU0 datagram prior to RAW3 datagrams.
 #' @param fixBeamType logical; if TRUE the BeamType is fixed to 1.
 #' @param fixSlope logical; if TRUE the slope is set to a default.
-#' @param addTransducerSeralNumber A string giving the transducer serial number.
+#' @param addTransducerSerialNumber  Logical; if TRUE add transducer serial number to the xml datagram.
 #' @param endian the endianness of the file, defaulted to "little".
 #' @param msg logical: if TRUE print a time bar during file conversion.
 #'
@@ -127,7 +128,7 @@ readEKRaw_EK80modifyFile<-function(filename, newDir, t="all", addMRU=TRUE, fixBe
 		}
 	
 	# Very large values of 't' are interpreted as Inf:
-	if(any(nchar(t)>4)){
+	if(any(nchar(t)>6)){
 		mtim=interpret.mtim(t)
 		t=c(0,Inf)
 		}

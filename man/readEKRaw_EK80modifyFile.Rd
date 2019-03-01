@@ -5,13 +5,15 @@
 \title{Modify parts of EK80/WBAT .raw files}
 \usage{
 readEKRaw_EK80modifyFile(filename, newDir, t = "all", addMRU = TRUE,
-  fixBeamType = TRUE, fixSlope = TRUE, addTransducerSerialNumber = "114",
-  endian = "little", msg = TRUE)
+  fixBeamType = TRUE, fixSlope = TRUE,
+  addTransducerSerialNumber = "114", endian = "little", msg = TRUE)
 }
 \arguments{
 \item{filename}{The path to directory of raw files or a vector of the paths to the raw files.}
 
 \item{newDir}{The directory in which to put the modified files.}
+
+\item{t}{The pings to process.}
 
 \item{addMRU}{logical; if TRUE the funciton inserts a dummy MRU0 datagram prior to RAW3 datagrams.}
 
@@ -19,11 +21,11 @@ readEKRaw_EK80modifyFile(filename, newDir, t = "all", addMRU = TRUE,
 
 \item{fixSlope}{logical; if TRUE the slope is set to a default.}
 
+\item{addTransducerSerialNumber}{Logical; if TRUE add transducer serial number to the xml datagram.}
+
 \item{endian}{the endianness of the file, defaulted to "little".}
 
 \item{msg}{logical: if TRUE print a time bar during file conversion.}
-
-\item{addTransducerSeralNumber}{A string giving the transducer serial number.}
 }
 \value{
 A vector of file names of the modified files.

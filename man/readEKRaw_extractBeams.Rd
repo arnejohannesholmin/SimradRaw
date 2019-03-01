@@ -6,6 +6,13 @@
 \usage{
 readEKRaw_extractBeams(x, beamnr = NULL, drop = FALSE)
 }
+\arguments{
+\item{x}{A list of data read by readEKRaw().}
+
+\item{beamnr}{A vector of indices of the beams to extract.}
+
+\item{drop}{Logical: if TRUE drop the output when only one beam is extracted.}
+}
 \value{
 
 }

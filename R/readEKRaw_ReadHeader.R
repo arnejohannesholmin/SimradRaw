@@ -3,6 +3,7 @@
 #' Read the header from a Simrad raw file.
 #'
 #' @param fid  is the path to the raw file.
+#' @param dgHeader A list containing the dgTime.
 #' @param endian  is the endian of the file, defaulted to .Platform$endian (changed from "big" by Arne Johannes Holmin 2012-07-31).
 #'
 #' @return

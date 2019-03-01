@@ -4,7 +4,7 @@
 #'
 #' @param fid  is the path to the raw file.
 #' @param timeOffset  is the time offset of the datagram.
-#' @param endian' is the endian of the file, defaulted to .Platform$endian (changed from "big" by Arne Johannes Holmin 2012-07-31). NA
+#' @param endian is the endian of the file, defaulted to .Platform$endian (changed from "big" by Arne Johannes Holmin 2012-07-31). NA
 #' @param xBase  is the base of Windows FILETIME: xBase=unclass(as.POSIXct('1601-1-1', tz="UTC"))[1].
 #'
 #' @return

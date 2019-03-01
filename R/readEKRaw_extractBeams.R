@@ -1,6 +1,12 @@
 #*********************************************
 #*********************************************
 #' Extracts one or more beams from raw data read by readEKRaw().
+#' 
+#' Used in \code{\link\{readEKRaw_split}}.
+#'
+#' @param x			A list of data read by readEKRaw().
+#' @param beamnr	A vector of indices of the beams to extract.
+#' @param drop		Logical: if TRUE drop the output when only one beam is extracted.
 #'
 #' @return
 #'
@@ -8,7 +14,6 @@
 #' \dontrun{}
 #'
 #' @export
-#' @rdname readEKRaw_extractBeams
 #' 
 readEKRaw_extractBeams <- function(x, beamnr=NULL, drop=FALSE){
 	# Remove variables with missing names (left overs from the reading function, but should be removed in the future):

@@ -6,6 +6,9 @@
 \usage{
 readcalfile(x)
 }
+\arguments{
+\item{x}{The path to a calibration file in XML format.}
+}
 \value{
 
 }

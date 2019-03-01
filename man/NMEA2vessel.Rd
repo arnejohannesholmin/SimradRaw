@@ -7,9 +7,11 @@
 NMEA2vessel(x, cleanNMEA = 1, interpolate = TRUE)
 }
 \arguments{
-\item{x}{is an NMEA string.}
+\item{x}{An NMEA string.}
 
-\item{cleanNMEA}{is FALSE to return the data as read, without shaving off incomplete time steps, 1 to remove incomplete and duplicate time steps, and 2 to additionally clean missing info at the end.}
+\item{cleanNMEA}{Logical: If FALSE return the data as read, without shaving off incomplete time steps, 1 to remove incomplete and duplicate time steps, and 2 to additionally clean missing info at the end.}
+
+\item{interpolate}{Logical: If TRUE interpolate the NMEA info.}
 }
 \value{
 

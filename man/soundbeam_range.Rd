@@ -11,6 +11,10 @@ soundbeam_range(x, pos = c("mid", "edge", "max", "res", "grid"),
 \item{x}{is a list of the variables 'lenb', and 'rres' or 'asps' and 'sint'.}
 
 \item{pos}{is "res" to return the radial resolution, "max" to return the maximum range of the "mid" to return midpoints of the voxels and "edge" to return edge points, and numeric to return 'pos' positions between 0 and the maximum range to the edges.}
+
+\item{adds}{A list of variables to add to the input list x.}
+
+\item{Ro}{The range offset in meters.}
 }
 \value{
 

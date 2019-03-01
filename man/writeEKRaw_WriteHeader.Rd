@@ -4,7 +4,8 @@
 \alias{writeEKRaw_WriteHeader}
 \title{Writes the header to a Simrad raw file.}
 \usage{
-writeEKRaw_WriteHeader(fid, config, dgLen, dgType, dgTime, endian = "little")
+writeEKRaw_WriteHeader(fid, config, dgLen, dgType, dgTime,
+  endian = "little")
 }
 \arguments{
 \item{fid}{is the path to the raw file.}
@@ -18,8 +19,6 @@ writeEKRaw_WriteHeader(fid, config, dgLen, dgType, dgTime, endian = "little")
 \item{dgTime}{is the time stamp of the datagram.}
 
 \item{endian}{is the endian of the file, defaulted to .Platform$endian (changed from "big" by Arne Johannes Holmin 2012-07-31).}
-
-\item{header}{is a list of the header to write to the Simrad raw file.}
 }
 \value{
 

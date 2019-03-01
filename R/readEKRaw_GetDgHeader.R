@@ -2,10 +2,12 @@
 #*********************************************
 #' Reads the a datagram header stored in a Simrad raw file.
 #'
-#' @param fid  is the path to the raw file.
+#' @param x	The raw vector.
 #' @param timeOffset  is the time offset of the datagram.
-#' @param endian' is the endian of the file, defaulted to .Platform$endian (changed from "big" by Arne Johannes Holmin 2012-07-31). NA
+#' @param endian is the endian of the file, defaulted to .Platform$endian (changed from "big" by Arne Johannes Holmin 2012-07-31). NA
 #' @param xBase  is the base of Windows FILETIME: xBase=unclass(as.POSIXct('1601-1-1', tz="UTC"))[1].
+#' @param offset an offset in bytes.
+#' @param ...	Used for robustness.
 #'
 #' @return
 #'
@@ -15,29 +17,12 @@
 #' @importFrom TSD FILETIME2mtim
 #'
 #' @export
-#' @rdname readEKRaw_ReadDgHeader
 #'
 readEKRaw_GetDgHeader <- function(x, timeOffset=0, endian="little", xBase=-11644473600, offset=0, ...){
 	
-	############ AUTHOR(S): ############
-	# Arne Johannes Holmin
-	############ LANGUAGE: #############
-	# English
 	############### LOG: ###############
 	# Start: 2014-11-10 - Clean version.
-	########### DESCRIPTION: ###########
-	# Reads the a datagram header stored in a Simrad raw file.
-	########## DEPENDENCIES: ###########
-	#
-	############ VARIABLES: ############
-	# ---fid--- is the path to the raw file.
-	# ---timeOffset--- is the time offset of the datagram.
-	# ---endian' is the endian of the file, defaulted to .Platform$endian (changed from "big" by Arne Johannes Holmin 2012-07-31).
-	# ---xBase--- is the base of Windows FILETIME: xBase=unclass(as.POSIXct('1601-1-1', tz="UTC"))[1].
 	
-
-	##################################################
-	##################################################
 	# Read datagram type:
 	s <- seq_len(4) + offset
 	dgType <- rawToChar(x[s])
@@ -60,6 +45,4 @@ readEKRaw_GetDgHeader <- function(x, timeOffset=0, endian="little", xBase=-11644
 	
 	# Return:
 	list(dgType=dgType, dgTime=dgTime)
-	##################################################
-	##################################################
 }

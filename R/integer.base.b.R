@@ -4,7 +4,7 @@
 #'
 #' @param x  is the value of sampledata$datatype.
 #' @param b  is the base.
-#' @param endian' is the endian of the file, defaulted to .Platform$endian (changed from "big" by Arne Johannes Holmin 2012-07-31). NA
+#' @param endian is the endian of the file, defaulted to .Platform$endian (changed from "big" by Arne Johannes Holmin 2012-07-31). NA
 #'
 #' @return
 #'

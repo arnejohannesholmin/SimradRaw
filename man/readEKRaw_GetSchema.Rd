@@ -8,7 +8,7 @@ readEKRaw_GetSchema(dgName = c("RAW0", "RAW1", "ConfigHeader",
   "TransceiverConfig"))
 }
 \arguments{
-\item{x}{is the path to the raw file.}
+\item{dgName}{The type of schema, such as a datagram name.}
 }
 \value{
 

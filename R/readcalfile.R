@@ -2,6 +2,8 @@
 #*********************************************
 #' Reads calibration files in the xml format used by LSSS.
 #'
+#' @param x	The path to a calibration file in XML format.
+#'
 #' @return
 #'
 #' @examples

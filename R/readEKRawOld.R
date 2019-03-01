@@ -4,7 +4,7 @@
 #'
 #' @param f  is the path to the raw file.
 #' @param t  is a vector of the time steps to read.
-#' @param endian' is the endian of the file, defaulted to .Platform$endian (changed from "big" by Arne Johannes Holmin 2012-07-31). NA
+#' @param endian is the endian of the file, defaulted to .Platform$endian (changed from "big" by Arne Johannes Holmin 2012-07-31). NA
 #' @param timeOffset  is the time offset of the datagram.
 #' @param minTimeDiff  is the minimum difference in matlab time betwee two pings.
 #' @param drop.out  is TRUE to drop dimensions of the data.
@@ -24,7 +24,7 @@
 #' @importFrom utils tail
 #'
 #' @export
-#' @rdname readEKRaw
+#' @rdname readEKRawOld
 #'
 readEKRawOld <- function(f, t=1, endian="little", timeOffset=0, minTimeDiff=Inf, drop.out=FALSE, msg=TRUE, prenumt=10, na.rm=TRUE, cleartemp=FALSE){
 	

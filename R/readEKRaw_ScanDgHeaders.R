@@ -4,10 +4,10 @@
 #'
 #' Provides the facility to modify parts of EK80/WBAT .raw files so that these files can be read by the Large Scale Survey System (LSSS) software.
 #'
-#' @param filename The path to directory of raw files or a vector of the paths to the raw files.
-#' @param addTransducerSeralNumber A string giving the transducer serial number.
-#' @param endian the endianness of the file, defaulted to "little".
-#' @param msg logical: if TRUE print a time bar during file reading.
+#' @param raw			The path to directory of raw files or a vector of the paths to the raw files.
+#' @param endian		The endianness of the file, defaulted to "little".
+#' @param msg			Logical: if TRUE print a time bar during file reading.
+#' @param rawsplit.out	Logical: should the raw vector be split by datagrams and returned.
 #'
 #' @return A data frame of datagram info.
 #'
@@ -18,7 +18,7 @@
 #' @export
 #' @rdname readEKRaw_ScanDgHeaders
 #' 
-readEKRaw_ScanDgHeaders <- function(raw, endian="little", msg=TRUE, raw.out=FALSE){
+readEKRaw_ScanDgHeaders <- function(raw, endian="little", msg=TRUE, rawsplit.out=FALSE){
 	
 	#  Read the entire file if not previously read:
 	if(is.character(raw) && file.exists(raw)){
@@ -30,7 +30,6 @@ readEKRaw_ScanDgHeaders <- function(raw, endian="little", msg=TRUE, raw.out=FALS
 	nbytesDgLen <- 4
 	nBytesDgHeader <- 12
 	totalsteps <- length(raw)
-	
 	
 	# Define the output 'out', the datagram indices 'i', and the position in the raw vector 'at':
 	out <- list()
@@ -78,7 +77,7 @@ readEKRaw_ScanDgHeaders <- function(raw, endian="little", msg=TRUE, raw.out=FALS
 	dg$ends <- dg$starts - nbytesDgLen
 	dg$starts <- c(0, dg$starts[-length(dg$starts)]) + nbytesDgLen + nBytesDgHeader + 1
 	
-	if(raw.out){
+	if(rawsplit.out){
 		rawsplit <- readEKRaw_SplitRawVector(list(raw=raw, dg=dg))$raw
 		list(dg=dg, raw=raw, rawsplit=rawsplit)
 	}
@@ -86,7 +85,7 @@ readEKRaw_ScanDgHeaders <- function(raw, endian="little", msg=TRUE, raw.out=FALS
 		list(dg=dg, raw=raw)
 	}
 }
-
+# Function for splitting the raw vector into vectors for each datagram (excluding the header and length info at the start of the vector and the length info at the end):
 readEKRaw_SplitRawVector <- function(x, dg=NULL, ind=NULL){
 	if(length(ind) == 0){
 		ind <- seq_along(x$dg$starts)
