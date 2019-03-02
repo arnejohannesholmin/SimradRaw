@@ -35,7 +35,7 @@ readEKRawOld <- function(f, t=1, endian="little", timeOffset=0, minTimeDiff=Inf,
 	############### LOG: ###############
 	# Start: 2014-11-10 - Clean version.
 	# Update: 2015-04-23 - Changed to return pings separately as elements of lists, and filling in NAs to form arrays in each ping, but keeping variable lengths between pings, in order to save space particularly when one ping has long beams and the others have short beams, in which case a lot of NAs will be saved.
-	# Update: 2015-10-08 - Added support for reading non-UTF-8 characters such as "Æ".
+	# Update: 2015-10-08 - Added support for reading non-UTF-8 characters.
 	# Update: 2015-11-16 - Fixed bug when reading files with long difference in time between beams. Now trying to associate new pings by either that the idx reached numb, or that idx==1.
 	# Last: 2016-10-23 - Changed to writing multiple temporary TSD files, speeding up for high number of pings.
 	
