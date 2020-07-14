@@ -4,8 +4,12 @@
 \alias{soundbeam_range}
 \title{This function calculates various variables related to the voxels of an aoustic system, such as the mid points or edge points of the voxels. NOTE: This function only considers one time step, which is a weekness, since the radial resolution may change between pings, particularly with fishery sonars.}
 \usage{
-soundbeam_range(x, pos = c("mid", "edge", "max", "res", "grid"),
-  adds = NULL, Ro = NULL)
+soundbeam_range(
+  x,
+  pos = c("mid", "edge", "max", "res", "grid"),
+  adds = NULL,
+  Ro = NULL
+)
 }
 \arguments{
 \item{x}{is a list of the variables 'lenb', and 'rres' or 'asps' and 'sint'.}

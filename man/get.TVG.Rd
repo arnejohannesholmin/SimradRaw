@@ -4,8 +4,7 @@
 \alias{get.TVG}
 \title{Calculate the Time Varied Gain function.}
 \usage{
-get.TVG(beams, x = NULL, linear = TRUE, TVG.exp = 2, Ro = NULL,
-  thr1m = FALSE)
+get.TVG(beams, x = NULL, linear = TRUE, TVG.exp = 2, Ro = NULL, thr1m = FALSE)
 }
 \arguments{
 \item{beams}{is the list of beams inputs including "lenb" (lengths of beams), "sint" (pulse length), "absr" (absorption coefficent of the beams) and "asps" (average speed of sound).}

@@ -4,9 +4,18 @@
 \alias{readEKRaw}
 \title{Reads a Simrad raw file.}
 \usage{
-readEKRaw(f, t = 1, endian = "little", timeOffset = 0,
-  drop.out = FALSE, msg = TRUE, splitByPings = FALSE,
-  complex.out = FALSE, ...)
+readEKRaw(
+  f,
+  t = 1,
+  endian = "little",
+  timeOffset = 0,
+  drop.out = FALSE,
+  msg = TRUE,
+  splitByPings = FALSE,
+  complex.out = FALSE,
+  skipRaw = FALSE,
+  ...
+)
 }
 \arguments{
 \item{f}{The path to the raw file.}
@@ -24,6 +33,8 @@ readEKRaw(f, t = 1, endian = "little", timeOffset = 0,
 \item{splitByPings}{Logical: If TRUE split the acousic data by pings, which can avoid many NAs at the ends of the beams when the range shifts inside a file.}
 
 \item{complex.out}{Logical: If TRUE output the real and imaginary part usd to extract power (for fishery sonars).}
+
+\item{skipRaw}{Logical: If TRUE skip reading the RAW data (power). This reduces processing time to about 20%, useful if the acoustic data are not needed.}
 
 \item{...}{Used for robustness.}
 }

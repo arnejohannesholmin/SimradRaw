@@ -4,8 +4,7 @@
 \alias{writeEKRaw}
 \title{Writes a Simrad raw file.}
 \usage{
-writeEKRaw(data, con, header = NULL, t = 1, endian = "little",
-  msg = TRUE)
+writeEKRaw(data, con, header = NULL, t = 1, endian = "little", msg = TRUE)
 }
 \arguments{
 \item{data}{is a list of the data to write to the Simrad raw file.}

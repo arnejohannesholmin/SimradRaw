@@ -29,6 +29,7 @@ writeEKRaw <- function(data, con, header=NULL, t=1, endian="little", msg=TRUE){
 		data = data$data
 	}
 	
+	
 	DataTypeChar = c("NME0", "TAG0", "CON1", "SVP0")
 	DataName = c("NMEA", "annotations", "conf", "svp")
 	AcousticType = c("RAW0", "RAW1")
@@ -90,14 +91,21 @@ writeEKRaw <- function(data, con, header=NULL, t=1, endian="little", msg=TRUE){
 		applyLastDimAsChannel = function(x){
 			# Split by last dimension, assumed to be channels:
 			splitOnePingByLastDimension <- function(x){
-				if(length(dim(x))<2){
-					dim(x) = c(1, length(x))
-				}
-				# If three or more dimensions, collapse to a matrix:
-				else{
-					dim(x) = c(dim(x)[1], prod(dim(x)[-1]))
-				}
-				split(x, rep(seq_len(dim(x)[2]), each=dim(x)[1]))
+				
+				prodLastTwoDimensions <- prod(utils::tail(dim(x), 2))
+				lengthAllButLastTwoDimensions <- length(x) / prodLastTwoDimensions
+				
+				split(x, rep(seq_len(prodLastTwoDimensions), each = lengthAllButLastTwoDimensions))
+				
+				#
+				#if(length(dim(x))<2){
+				#	dim(x) = c(1, length(x))
+				#}
+				## If three or more dimensions, collapse to a matrix:
+				##else{
+				#	dim(x) = c(dim(x)[1], prod(dim(x)[-1]))
+				##}
+				#split(x, rep(seq_len(dim(x)[2]), each=dim(x)[1]))
 			}
 			# Split each list element and flatten the list:
 			if(is.list(x)){

@@ -4,8 +4,15 @@
 \alias{apply.TVG}
 \title{Adds or removes TVG.}
 \usage{
-apply.TVG(x, beams, rm = FALSE, linear = TRUE, TVG.exp = 2,
-  Ro = NULL, thr1m = FALSE)
+apply.TVG(
+  x,
+  beams,
+  rm = FALSE,
+  linear = TRUE,
+  TVG.exp = 2,
+  Ro = NULL,
+  thr1m = FALSE
+)
 }
 \arguments{
 \item{x}{is the input acoustic data arranged in an array having the radial part along the first dimension, the beams along the second or second and third, and time steps and other optional dimensions along the last dimension (lenb,numb,numt).}

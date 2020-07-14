@@ -39,7 +39,7 @@ getDgLen<-function(thisdata, thisdatagramName, nBytesDgHeader, nBytesSampledataI
 	##################################################
 	##################################################
 	if(TSD::strff("raw0",thisdatagramName)){
-		nBytesDgHeader + nBytesSampledataInfo + (2*as.numeric(length(thisdata$power)>0) + as.numeric(length(thisdata$athwartship_e)>0) + as.numeric(length(thisdata$alongship_e)>0)) * thisdata$count
+		nBytesDgHeader + nBytesSampledataInfo + (2*as.numeric(length(thisdata$power)>0) + as.numeric(length(thisdata$athwartship)>0) + as.numeric(length(thisdata$alongship)>0)) * thisdata$count
 		}
 	else if(TSD::strff("raw1",thisdatagramName)){
 		nBytesDgHeader + nBytesSampledataInfo + 4 * 2*thisdata$ncomplexpersample*thisdata$count

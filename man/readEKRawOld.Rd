@@ -4,9 +4,18 @@
 \alias{readEKRawOld}
 \title{Reads a Simrad raw file.}
 \usage{
-readEKRawOld(f, t = 1, endian = "little", timeOffset = 0,
-  minTimeDiff = Inf, drop.out = FALSE, msg = TRUE, prenumt = 10,
-  na.rm = TRUE, cleartemp = FALSE)
+readEKRawOld(
+  f,
+  t = 1,
+  endian = "little",
+  timeOffset = 0,
+  minTimeDiff = Inf,
+  drop.out = FALSE,
+  msg = TRUE,
+  prenumt = 10,
+  na.rm = TRUE,
+  cleartemp = FALSE
+)
 }
 \arguments{
 \item{f}{is the path to the raw file.}

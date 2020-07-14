@@ -4,8 +4,7 @@
 \alias{writeEKRaw_WriteDgHeader}
 \title{Writes the sample data to a Simrad raw0 file.}
 \usage{
-writeEKRaw_WriteDgHeader(fid, dgType, dgTime, endian = "little",
-  tz = "UTC")
+writeEKRaw_WriteDgHeader(fid, dgType, dgTime, endian = "little", tz = "UTC")
 }
 \arguments{
 \item{fid}{is the path to the raw file.}

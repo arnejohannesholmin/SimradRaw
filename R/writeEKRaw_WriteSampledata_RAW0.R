@@ -63,6 +63,7 @@ writeEKRaw_WriteSampledata_RAW0<-function(fid, data, endian="little"){
 	
 	# Update data$count after removing missing values in the acoustic or angle data:
 	data$count <- suppressWarnings(max(sum(!is.na(data$power)),sum(!is.na(data$athwartship)),sum(!is.na(data$alongship))))
+	#data$count <- suppressWarnings(sum(!is.na(data$power), !is.na(data$athwartship), !is.na(data$alongship)))
 	writeBin(as.integer(data$count), con=fid, size=4, endian=endian) # 72 bytes in total
 	
 	# Write the acoustic and angle data:

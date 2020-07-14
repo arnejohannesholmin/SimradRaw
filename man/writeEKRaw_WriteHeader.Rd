@@ -4,8 +4,7 @@
 \alias{writeEKRaw_WriteHeader}
 \title{Writes the header to a Simrad raw file.}
 \usage{
-writeEKRaw_WriteHeader(fid, config, dgLen, dgType, dgTime,
-  endian = "little")
+writeEKRaw_WriteHeader(fid, config, dgLen, dgType, dgTime, endian = "little")
 }
 \arguments{
 \item{fid}{is the path to the raw file.}
