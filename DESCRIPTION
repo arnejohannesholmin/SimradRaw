@@ -10,7 +10,7 @@ Depends: R (>= 3.5)
 BugReports: https://github.com/arnejohannesholmin/SimradRaw/issues
 License: LGPL-3
 LazyData: true
-RoxygenNote: 7.0.2
+RoxygenNote: 7.1.1
 Imports:
 		data.table,
 		XML,

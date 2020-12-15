@@ -34,7 +34,7 @@ readEKRaw(
 
 \item{complex.out}{Logical: If TRUE output the real and imaginary part usd to extract power (for fishery sonars).}
 
-\item{skipRaw}{Logical: If TRUE skip reading the RAW data (power). This reduces processing time to about 20%, useful if the acoustic data are not needed.}
+\item{skipRaw}{Logical: If TRUE skip reading the RAW data (power). This reduces processing time to about 20 percent, useful if the acoustic data are not needed.}
 
 \item{...}{Used for robustness.}
 }

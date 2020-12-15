@@ -10,7 +10,7 @@
 #' @param msg			Logical: If TRUE print a time bar during reading.
 #' @param splitByPings	Logical: If TRUE split the acousic data by pings, which can avoid many NAs at the ends of the beams when the range shifts inside a file.
 #' @param complex.out	Logical: If TRUE output the real and imaginary part usd to extract power (for fishery sonars).
-#' @param skipRaw		Logical: If TRUE skip reading the RAW data (power). This reduces processing time to about 20%, useful if the acoustic data are not needed.
+#' @param skipRaw		Logical: If TRUE skip reading the RAW data (power). This reduces processing time to about 20 percent, useful if the acoustic data are not needed.
 #' @param ...			Used for robustness.
 #'
 #' @return
@@ -129,11 +129,11 @@ readEKRaw <- function(f, t=1, endian="little", timeOffset=0, drop.out=FALSE, msg
 		}
 		
 		# Support for only one channel per ping:
+		channelID <- unlist(raw$channel)
 		if(all(unlist(raw$channel) == raw$channel[[1]])){
 			pingID <- seq_along(raw$channel)
 		}
 		else{
-			channelID <- unlist(raw$channel)
 			pingID <- c(1, diff(channelID))
 			pingID <- pingID < 0
 			pingID <- cumsum(pingID) + 1
@@ -441,7 +441,7 @@ readEKRaw <- function(f, t=1, endian="little", timeOffset=0, drop.out=FALSE, msg
 		atXML0 <- seq(temp$dg$starts[atXML0], temp$dg$end[atXML0])
 		suppressWarnings(config <- readEKRaw_GetXML(temp$raw[atXML0]))
 		# Get the number of beams:
-		numb <- length(config$Transceivers)
+		numb <- length(config$Transceivers[names(config$Transceivers) == "Transceiver"])
 	}
 	else{
 		stop("No CON0 or XML0 datagram at the beginning of the file.")
@@ -623,6 +623,41 @@ readEKRaw_GetRawFileFormat <- function(x){
 	rawFileFormat
 }
 
+
+#*********************************************
+#*********************************************
+#' Read only vessel data from a Simrad raw file.
+#'
+#' @param f				The path to the raw file.
+#' @param NMEA.out		logiacl: If TRUE retun a list of the NMEA strings and the vessel info.
+#'
+#' @export
+#'
+readAllNMEA <- function(f, NMEA.out = FALSE) {
+	# Scan the file:
+	raw <- readEKRaw_ScanDgHeaders(f)
+	# Convert all NMEA to string:
+	NMEA <- sapply(which(raw$dg$dgName == "NME0"), function(at) rawToChar(raw$raw[seq(raw$dg[at, "starts"], raw$dg[at, "ends"])]))
+	
+	vessel <- NMEA2vessel(NMEA)
+	vessel$ftim <- TSD::mtim2ftim(vessel$imtm)
+	
+	if(NMEA.out) {
+		return(
+			list(
+				NMEA = NMEA, 
+				vessel = vessel
+			)
+		)
+	}
+	else {
+		return(vessel)
+	}
+	
+	
+}
+
+
 # Function for converting mode_high and mode_low to mode:
 readEKRaw_getMode <- function(x, ...){
 	if(length(x$mode_high) && length(x$mode_high)){
@@ -697,7 +732,7 @@ readEKRaw_removeFirst <- function(data, name){
 readEKRaw_UsedXML0 <- function(data){
 	atTransceivers <- which(sapply(data$XML0, function(x) "Transceivers" %in% names(x)))[1]
 	atEnvironment <- which(sapply(data$XML0, function(x) "SoundSpeed" %in% names(x$.attrs)))[1]
-	atVersion <- which(sapply(data$XML0, function(x) "version" %in% names(x)))[1]
+	atVersion <- head(which(sapply(data$XML0, function(x) "version" %in% names(x))), 1)
 	
 	data$XML0 <- data$XML0[-c(atTransceivers, atEnvironment, atVersion)]
 	
@@ -759,7 +794,7 @@ getTransducerVarOne <- function(x, var){
 	out
 }
 getTransducerVar <- function(config, var){
-	out <- lapply(config$Transceivers, function(x) getTransducerVarOne(x$Channels$Channel$Transducer, var))
+	out <- lapply(config$Transceivers[names(config$Transceivers) == "Transceiver"], function(x) getTransducerVarOne(x$Channels$Channel$Transducer, var))
 	if(length(out[[1]]) == 1){
 		out <- unname(unlist(out))
 	}
@@ -782,13 +817,13 @@ getFrequencyPar <- function(config){
 		}
 		out
 	}
-	out <- lapply(config$Transceivers, getFrequencyParOne)
+	out <- lapply(config$Transceivers[names(config$Transceivers) == "Transceiver"], getFrequencyParOne)
 	out <- unname(out)
 	out
 }
 getDataConfigRaw3 <- function(config){
 	out <- list(
-		channelid                   = sapply(config$Transceivers, function(x) x$Channels$Channel$.attrs["ChannelID"]),
+		channelid                   = sapply(config$Transceivers[names(config$Transceivers) == "Transceiver"], function(x) x$Channels$Channel$.attrs["ChannelID"]),
 		beamtype                    = getTransducerVar(config, "BeamType"),
 		frequency                   = getTransducerVar(config, "Frequency"),
 		gain                        = getTransducerVar(config, "Gain"),
@@ -805,7 +840,7 @@ getDataConfigRaw3 <- function(config){
 		dirx                        = NA,
 		diry                        = NA,
 		dirz                        = NA,
-		pulselengthtable            = do.call(rbind, lapply(config$Transceivers, function(x) splitByChar(x$Channels$Channel$.attrs["PulseDuration"]))),
+		pulselengthtable            = do.call(rbind, lapply(config$Transceivers[names(config$Transceivers) == "Transceiver"], function(x) splitByChar(x$Channels$Channel$.attrs["PulseDuration"]))),
 		spare2                      = NA,
 		gaintable                   = getTransducerVar(config, "Gain"),
 		spare3                      = NA,
@@ -1467,6 +1502,7 @@ readEKRaw_power2sv.TSD <- function(x, beams=list(), cali=NULL, list.out=FALSE, t
 	exp10 <- function(x){
 		10^(x/10)
 	}
+	
 	
 	# Detect the type of raw file:
 	if(length(beams$gai1)>0 || (is.list(x) && length(x$data$pings$gaintx)>0)){
