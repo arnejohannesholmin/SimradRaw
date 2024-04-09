@@ -19,9 +19,6 @@ get.TVG(beams, x = NULL, linear = TRUE, TVG.exp = 2, Ro = NULL, thr1m = FALSE)
 
 \item{thr1m}{Logical: If TRUE apply a rule that TVG closer than 1 m should not cause increasedd level (used in LSSS?))}
 }
-\value{
-
-}
 \description{
 Calculate the Time Varied Gain function.
 }

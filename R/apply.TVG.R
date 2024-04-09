@@ -28,7 +28,6 @@ apply.TVG<-function(x, beams, rm=FALSE, linear=TRUE, TVG.exp=2, Ro=NULL, thr1m=F
 	# Update: 2010-11-09 - Included the 'ctd' input in 'beams'.
 	# Update: 2014-04-02 - Changed to apply get.TVG().
 	# Last: 2015-04-23 - Changed to accept list for 'x' and added the option 'rm', so that apply.TVG() now is the only function used for both adding and removing TVG.
-	
 	##### Preparation #####
 	# Function for extracting one ping of a matrix of data, og simply the vector if given as one:
 	getping<-function(y, p){
@@ -45,10 +44,12 @@ apply.TVG<-function(x, beams, rm=FALSE, linear=TRUE, TVG.exp=2, Ro=NULL, thr1m=F
 		beams = x[beamsnames]
 		x = x$vbsc
 	}
+	
 	# Convert to list for convenience:
 	if(!is.list(x)){
 		x = list(x)
 	}
+	
 	# Apply the TVG to each element of the list, often representing time steps:
 	for(i in seq_along(x)){
 		# Select the current time step in the beam configuration data:

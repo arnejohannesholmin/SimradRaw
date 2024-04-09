@@ -38,9 +38,6 @@ readEKRaw(
 
 \item{...}{Used for robustness.}
 }
-\value{
-
-}
 \description{
 Reads a Simrad raw file.
 }

@@ -26,9 +26,6 @@ readEKRaw_GetDgHeader(
 
 \item{...}{Used for robustness.}
 }
-\value{
-
-}
 \description{
 Reads the a datagram header stored in a Simrad raw file.
 }

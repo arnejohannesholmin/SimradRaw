@@ -13,9 +13,6 @@ integer.base.b(x, b = 2, endian = "little")
 
 \item{endian}{is the endian of the file, defaulted to .Platform$endian (changed from "big" by Arne Johannes Holmin 2012-07-31). NA}
 }
-\value{
-
-}
 \description{
 Get integer base of the input. Based on code by Lars Nonboe Andersen, Simrad.
 }

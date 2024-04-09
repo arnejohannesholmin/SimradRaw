@@ -26,9 +26,6 @@ readEKRaw_power2sv.TSD(
 
 \item{toTS}{is TRUE to apply the TS calibration instead for the Sv calibration.}
 }
-\value{
-
-}
 \description{
 Converts power to volume backscattering coefficient from data in the TSD format.
 }

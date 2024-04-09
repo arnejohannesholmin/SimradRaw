@@ -13,9 +13,6 @@ readEKRaw_extractBeams(x, beamnr = NULL, drop = FALSE)
 
 \item{drop}{Logical: if TRUE drop the output when only one beam is extracted.}
 }
-\value{
-
-}
 \description{
 
 }

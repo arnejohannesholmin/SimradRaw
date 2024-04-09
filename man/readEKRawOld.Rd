@@ -38,9 +38,6 @@ readEKRawOld(
 
 \item{cleartemp}{is TRUE to clear all files in the temporary directory in which files are written in the TSD format for faster reading of the raw files. These files are deleted at startup of the operating system, but can be deleted specifically here if needed.}
 }
-\value{
-
-}
 \description{
 Reads a Simrad raw file.
 }

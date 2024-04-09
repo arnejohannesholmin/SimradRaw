@@ -13,9 +13,6 @@ readEKRaw_GetFileHeader(x, endian = "little", ...)
 
 \item{...}{Used for robustness.}
 }
-\value{
-
-}
 \description{
 Read the header from a Simrad raw file.
 }

@@ -15,9 +15,6 @@ getDgLen(thisdata, thisdatagramName, nBytesDgHeader, nBytesSampledataInfo)
 
 \item{nBytesSampledataInfo}{is the number of bytes of the sample data information.}
 }
-\value{
-
-}
 \description{
 Calcualtes the data gram length of a datagram to write to a Simrad raw file.
 }

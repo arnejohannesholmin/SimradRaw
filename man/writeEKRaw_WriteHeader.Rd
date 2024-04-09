@@ -19,9 +19,6 @@ writeEKRaw_WriteHeader(fid, config, dgLen, dgType, dgTime, endian = "little")
 
 \item{endian}{is the endian of the file, defaulted to .Platform$endian (changed from "big" by Arne Johannes Holmin 2012-07-31).}
 }
-\value{
-
-}
 \description{
 Writes the header to a Simrad raw file.
 }

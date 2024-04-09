@@ -11,9 +11,6 @@ readEKRaw_stripNA(x, NAind = NULL)
 
 \item{NAind}{indices of the NAs.}
 }
-\value{
-
-}
 \description{
 (Internal) Strips the input from NAs, used to remove missing pings in EKRaw2TSD_oneFile().
 }

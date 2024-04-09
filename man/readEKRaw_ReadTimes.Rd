@@ -15,9 +15,6 @@ readEKRaw_ReadTimes(f, endian = "little", msg = TRUE, cores = 1)
 
 \item{cores}{An integer giving the number of cores to run in parallel.}
 }
-\value{
-
-}
 \description{
 Read all times of a raw file.
 }

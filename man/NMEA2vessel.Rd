@@ -13,9 +13,6 @@ NMEA2vessel(x, cleanNMEA = 1, interpolate = TRUE)
 
 \item{interpolate}{Logical: If TRUE interpolate the NMEA info.}
 }
-\value{
-
-}
 \description{
 Return vessel times, positions, headings and speeds located in an NMEA atring.
 }

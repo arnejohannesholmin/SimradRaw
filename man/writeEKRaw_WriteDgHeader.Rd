@@ -17,9 +17,6 @@ writeEKRaw_WriteDgHeader(fid, dgType, dgTime, endian = "little", tz = "UTC")
 
 \item{tz}{is the the time zone. Overrides 'xBase' in mtim2FILETIME() if not given as tz="UTC". See as.POSIXlt().}
 }
-\value{
-
-}
 \description{
 Writes the sample data to a Simrad raw0 file.
 }

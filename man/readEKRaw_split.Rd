@@ -38,9 +38,6 @@ readEKRaw_split(
 
 \item{...}{Further arguments passed on to list.files(), such as 'recursive'.}
 }
-\value{
-
-}
 \description{
 Splits Simrad raw files by beams.
 }

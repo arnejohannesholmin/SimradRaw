@@ -19,7 +19,7 @@
 #'
 soundbeam_range <- function(x, pos=c("mid","edge","max","res","grid"), adds=NULL, Ro=NULL){
 	
-	############### LOG: ###############
+    ############### LOG: ###############
 	# Start: 2014-04-02 - Clean version.
 	
 	##### Preparation #####
@@ -36,6 +36,7 @@ soundbeam_range <- function(x, pos=c("mid","edge","max","res","grid"), adds=NULL
 	#x$rres <- head(c(x$rres), 1)
 	
 	
+	#browser()
 	##### Execution and output #####
 	# Get ranges:
 	if(pos3=="res" || pos3=="rre"){

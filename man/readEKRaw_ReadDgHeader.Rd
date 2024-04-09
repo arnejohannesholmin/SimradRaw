@@ -20,9 +20,6 @@ readEKRaw_ReadDgHeader(
 
 \item{xBase}{is the base of Windows FILETIME: xBase=unclass(as.POSIXct('1601-1-1', tz="UTC"))[1].}
 }
-\value{
-
-}
 \description{
 Reads the a datagram header stored in a Simrad raw file.
 }
