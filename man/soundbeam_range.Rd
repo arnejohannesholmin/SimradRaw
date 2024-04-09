@@ -20,9 +20,6 @@ soundbeam_range(
 
 \item{Ro}{The range offset in meters.}
 }
-\value{
-
-}
 \description{
 This function calculates various variables related to the voxels of an aoustic system, such as the mid points or edge points of the voxels. NOTE: This function only considers one time step, which is a weekness, since the radial resolution may change between pings, particularly with fishery sonars.
 }

@@ -28,7 +28,6 @@
 #'
 readEKRaw <- function(f, t=1, endian="little", timeOffset=0, drop.out=FALSE, msg=TRUE, splitByPings=FALSE, complex.out=FALSE, skipRaw=FALSE, ...){
 	
-	ppp <- proc.time()
 	############### LOG: ###############
 	# Start: 2014-11-10 - Clean version.
 	# Update: 2015-04-23 - Changed to return pings separately as elements of lists, and filling in NAs to form arrays in each ping, but keeping variable lengths between pings, in order to save space particularly when one ping has long beams and the others have short beams, in which case a lot of NAs will be saved.
@@ -551,7 +550,6 @@ readEKRaw <- function(f, t=1, endian="little", timeOffset=0, drop.out=FALSE, msg
 	else if(length(rawDatagram) > 1){
 		warning("Only one RAW-datagram supported")
 	}
-	
 	
 	# Convert to a list of variables for the RAW* datagrams, and rename to "pings" according to the original Matlab structure by dr. Rick Towler, NOAA Alaska Fisheries Science Center:
 	# data[[rawDatagram]] <- list2arrayAddNA(data[[rawDatagram]], numb=numb, splitByPings=splitByPings, drop.out=drop.out, transpose=FALSE) # Not a successful attempt to used transpose=FALSE, sinfe there are bugs with this in list2arrayAddNA():
@@ -1512,6 +1510,7 @@ readEKRaw_power2sv.TSD <- function(x, beams=list(), cali=NULL, list.out=FALSE, t
 		raw=0
 	}
 	
+	
 	# If an object as read directly using readEKRaw() is used, extract the beams information here:
 	if(is.list(x) && length(x$data)>0){
 		# Beams variables with different location in raw0 and raw1:
@@ -1619,9 +1618,10 @@ readEKRaw_power2sv.TSD <- function(x, beams=list(), cali=NULL, list.out=FALSE, t
 		beams$tiltcorr <- 40 * log10(cos(-beams$dirx * pi / 180))
 	}
 	else{
-		beams$tiltcorr <- tiltcorr
+		beams$tiltcorr <- as.numeric(tiltcorr)
 	}
-	
+
+		
 	# Set correct dimensions:
 	beams[c("tpow", "lmbd", "asps", "plsl", "gain", "tiltcorr", "sacr", "eqba")] <- lapply(beams[c("tpow", "lmbd", "asps", "plsl", "gain", "tiltcorr", "sacr", "eqba")], array, dim=c(beams$numb, beams$numt))
 	if(toTS){
@@ -1897,6 +1897,15 @@ readEKRaw_GetSchemaOld <- function(dgName=c("RAW0", "RAW1", "ConfigHeader", "Tra
 	schema
 }
 
+
+#*********************************************
+#*********************************************
+#' Simrad raw schemas.
+#'
+#' @param dgName	The type of schema, such as a datagram name.
+#'
+#' @export
+#'
 readEKRaw_GetSchema <- function(dgName=c("RAW0", "RAW1", "ConfigHeader", "TransceiverConfig"), x=list(), var="all", group=FALSE){
 	
 	# Read power from RAW0 if mode != 2:
@@ -2267,17 +2276,13 @@ convertRaw <- function(x, schema=NULL, dgName=c("RAW0", "RAW1", "ConfigHeader", 
 	dependent <- which(dependent)
 	
 	# Group the schema by unique combinations of size and type, and convert for each group, hopefully saving time:
-	#ppp <- proc.time()[2:3]
 	#schemaGrouped <- readEKRaw_GroupSchemaStatic(schema=schema, static=static)
 	#out <- lapply(seq_along(schema$staticgroup$n), convertRawOneStaticGroup, x=x, schemaGrouped=schema$staticgroup, endian=endian, offset=offset)
 	#out <- unlist(out, recursive=FALSE)
-	#print(proc.time()[2:3] - ppp)
 	
 	
-	##ppp <- proc.time()[2:3]
 	out <- lapply(static, convertRawOneStaticSingle, x=x, schema=schema, endian=endian, offset=offset)
 	names(out) <- schema$var[static]
-	##print(proc.time()[2:3] - ppp)
 	
 	
 	#out <- lapply(static, convertRawOneStaticGroup, x=x, schema=schema, endian=endian, offset=offset)
@@ -2289,13 +2294,11 @@ convertRaw <- function(x, schema=NULL, dgName=c("RAW0", "RAW1", "ConfigHeader", 
 	}
 	
 	# Then the dependent:
-	#ppp <- proc.time()[3]
 	if(length(dependent)){
 		temp <- lapply(dependent, convertRawOneDependent, x=x, schema=schema, data=out, endian=endian, offset=offset)
 		names(temp) <- schema$var[dependent]
 		out <- c(out, temp)
 	}
-	#print(proc.time()[3] - ppp)
 	# Remove empty elements:
 	out <- out[lengths(out) > 0]
 	

@@ -29,9 +29,6 @@ apply.TVG(
 
 \item{thr1m}{Logical: If TRUE apply a rule that TVG closer than 1 m should not cause increasedd level (as used in LSSS).}
 }
-\value{
-
-}
 \description{
 Adds or removes TVG.
 }

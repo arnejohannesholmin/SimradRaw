@@ -74,10 +74,8 @@ writeEKRaw <- function(data, con, header=NULL, t=1, endian="little", msg=TRUE){
 	headerLen = nBytesDgHeader + nBytesConfigHeader + (header$transceivercount * nBytesTransceiverCount)
 	
 	#  Write the header:
-	# > > > > > > > > > > #
 	writeEKRaw_WriteHeader(fid=fid, config=list(header=header, transceiver=data$config), dgLen=headerLen, dgType="CON0", dgTime=header$time, endian=endian)
 	
-	# < < < < < < < < < < #
 	# Detect whether the acoustic data are given in arrays with dimension [lenb, numb, numt], where lenb = 1 for beam meta data:
 	#if(length(data$pings[[1]])>0 && !is.list(data$pings[[1]])){
 	if(length(data$pings[[1]])>0){
@@ -197,14 +195,10 @@ writeEKRaw <- function(data, con, header=NULL, t=1, endian="little", msg=TRUE){
 		thislength = getDgLen(thisdata, thisdatagramName, nBytesDgHeader, nBytesSampledataInfo)
 		
 		# Write the datagram length:
-		# > > > > > > > > > > #
 		writeBin(as.integer(thislength), con=fid, size=4, endian="little")
-		# < < < < < < < < < < #
 		
 		# Write the datagram header:
-		# > > > > > > > > > > #
 		writeEKRaw_WriteDgHeader(fid, dgType=thisdatagramName, dgTime=thismtim, endian="little", tz="UTC")
-		# < < < < < < < < < < #
 		
 		##### Process datagrams by type: #####
 		# Process NMEA datagram:
@@ -220,9 +214,50 @@ writeEKRaw <- function(data, con, header=NULL, t=1, endian="little", msg=TRUE){
 			writeEKRaw_WriteSampledata_RAW1(fid, thisdata, endian="little")
 		}
 		# Repeat the datagram length:
-		# > > > > > > > > > > #
 		writeBin(as.integer(thislength), con=fid, size=4, endian="little")
-		# < < < < < < < < < < #
-	}
+		
 	close(fid)
+	}
 }
+
+
+#*********************************************
+#*********************************************
+#' Declare a Simrad datagram.
+#'
+#' @export
+#' @rdname writeEKRaw
+#'
+declareDatagram <- function(dgName = c("RAW0", "RAW1", "ConfigHeader", "TransceiverConfig"), emptyCharacter = FALSE) {
+    schema <- readEKRaw_GetSchema(dgName = dgName)
+    out <- mapply(createOneVariable, schema$what, schema$n, emptyCharacter = emptyCharacter, SIMPLIFY = FALSE)
+    names(out)  <- schema$var
+    return(out)
+    
+}
+
+createOneVariable <- function(type, length, emptyCharacter = FALSE) {
+    value <- NA
+    
+    if(identical(type, "int")) {
+        value <-  0L
+    }
+    else if(identical(type, "double")) {
+        value <-  0
+    }
+    else if(identical(type, "char")) {
+        value <-  ""
+        if(emptyCharacter) {
+            length <- 0
+        }
+    }
+    
+    if(is.function(length)) {
+        length <-  0
+    }
+    
+    rep(value, length)
+}
+
+
+

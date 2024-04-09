@@ -11,9 +11,6 @@ readEKRaw_ReadConfigHeader(fid, endian = "little")
 
 \item{endian}{is the endian of the file, defaulted to .Platform$endian (changed from "big" by Arne Johannes Holmin 2012-07-31).}
 }
-\value{
-
-}
 \description{
 Reads the configuration header from a Simrad raw0 file.
 }

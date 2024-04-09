@@ -2,9 +2,15 @@
 % Please edit documentation in R/writeEKRaw.R
 \name{writeEKRaw}
 \alias{writeEKRaw}
+\alias{declareDatagram}
 \title{Writes a Simrad raw file.}
 \usage{
 writeEKRaw(data, con, header = NULL, t = 1, endian = "little", msg = TRUE)
+
+declareDatagram(
+  dgName = c("RAW0", "RAW1", "ConfigHeader", "TransceiverConfig"),
+  emptyCharacter = FALSE
+)
 }
 \arguments{
 \item{data}{is a list of the data to write to the Simrad raw file.}
@@ -19,11 +25,10 @@ writeEKRaw(data, con, header = NULL, t = 1, endian = "little", msg = TRUE)
 
 \item{msg}{is TRUE to print a time bar during reading.}
 }
-\value{
-
-}
 \description{
 Writes a Simrad raw file.
+
+Declare a Simrad datagram.
 }
 \examples{
 \dontrun{}
